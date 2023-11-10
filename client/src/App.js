@@ -154,7 +154,6 @@ useEffect(()=>{
     console.error('Axios or JSON parsing error:', error);
   }
   
-    fetchposts();
    }
   
 
