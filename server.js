@@ -5,6 +5,20 @@ const router = require('./routes/router')
 const mongoose = require('mongoose')
 require('dotenv/config')
 
+const dbOptions = {useNewUrlParser:true, useUnifiedTopology: true}
+const port=process.env.PORT|| 4000
+
+const connectDB = async ()=>{
+    try{
+        const conn = await mongoose.connect(process.env.DB_URI, dbOptions);
+        console.log(`MOngoDB connected:${conn.connection.host}`)
+
+    }
+    catch(error){
+        console.log(error);
+        process.exit(1);
+    }
+}
 
 const app = express();
 app.use(bodyParser.json())
@@ -30,11 +44,8 @@ app.get("*", function(_, res){
     )
 })
 
-const dbOptions = {useNewUrlParser:true, useUnifiedTopology: true}
-mongoose.connect(process.env.DB_URI, dbOptions).then(()=>console.log("connected")).catch(err=>console.log(err))
-
-
-const port=process.env.PORT|| 4000
-const server = app.listen(port, ()=>{
-    console.log(`server is running on ${port}`)
-}) 
+connectDB().then(()=>{
+    app.listen(port, ()=>{
+        console.log(`server is running on ${port}`)
+    }) 
+});
