@@ -54,7 +54,7 @@ useEffect(()=>{
 
   async function subhandler(movie) {
     try {
-      const response = await axios.post('http://localhost:4000/subreddits', movie, {
+      const response = await axios.post('/subreddits', movie, {
         headers: {
           'Content-Type': 'application/json'
         }
@@ -78,7 +78,7 @@ useEffect(()=>{
 
   async function posthandler(pdata) {
     try {
-      const response = await axios.post('http://localhost:4000/posts', pdata, {
+      const response = await axios.post('/posts', pdata, {
         headers: {
           'Content-Type': 'application/json'
         }
@@ -95,7 +95,7 @@ useEffect(()=>{
   }
 
    async function updatevotehandler(id,pid,  Vote, voteType){
-    const res = await fetch(`http://localhost:4000/posts/${pid}`);
+    const res = await fetch(`/posts/${pid}`);
     const pd = await res.json();
     console.log(pd)
     id= auth.currentUser.uid;
@@ -133,7 +133,7 @@ useEffect(()=>{
   
   try {
     const response = await axios.put(
-      `http://localhost:4000/posts/${pid}`,
+      `/posts/${pid}`,
       pd,
       {
         headers: {
@@ -161,7 +161,7 @@ useEffect(()=>{
   
 
   async function fetchsubs(){
-    const response = await fetch('http://localhost:4000/subreddits');
+    const response = await fetch('/subreddits');
   const dataR = await response.json();
   const extractedData = Object.keys(dataR).map((key) => ({
     title: dataR[key].title,
@@ -174,7 +174,7 @@ useEffect(()=>{
   }
 
   async function fetchposts(){
-    const response = await fetch('http://localhost:4000/posts');
+    const response = await fetch('/posts');
   const postsR = await response.json();
   const extractedpostData = Object.keys(postsR).map((key) => ({
     title: postsR[key].title,

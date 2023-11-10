@@ -52,7 +52,7 @@ useEffect(()=>{
 
 
    async function fetchcomments(){
-    const response = await fetch('http://localhost:4000/comments');
+    const response = await fetch('/comments');
   const commR = await response.json();
   const extractedcommData = Object.keys(commR).map((key) => ({
     Timeago: commR[key].Timeago,
@@ -65,7 +65,7 @@ useEffect(()=>{
   }
 
   async function handlesave(post){
-    const res = await fetch(`http://localhost:4000/posts`)
+    const res = await fetch(`/posts`)
   
         const R = await res.json();
   const reqid = Object.keys(R).find((key) => (
@@ -82,7 +82,7 @@ useEffect(()=>{
     }
   
   
-    const response = await fetch(`http://localhost:4000/posts/${post.pid}`, {
+    const response = await fetch(`/posts/${post.pid}`, {
         method: 'PUT',
         body: JSON.stringify(ms),
         headers:{
@@ -101,7 +101,7 @@ useEffect(()=>{
       author: "u/"+ name
     };
     // Add the new comment to the existing comments
-    const response = await fetch('http://localhost:4000/comments', {
+    const response = await fetch('/comments', {
       method: 'POST',
       body: JSON.stringify(newComment),
       headers:{

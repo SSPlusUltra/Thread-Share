@@ -13,7 +13,7 @@ const SubredditPage = (props) => {
   const title = queryParams.get('title');
   const subredditPosts = props.pdata.filter((post) => post.subreddit === title);
   async function handlesave(post){
-    const res = await fetch(`https://reddit-react-46092-default-rtdb.firebaseio.com/posts.json`)
+    const res = await fetch(`/subreddits`)
   
         const R = await res.json();
   const reqid = Object.keys(R).find((key) => (
@@ -30,7 +30,7 @@ const SubredditPage = (props) => {
     }
   
   
-    const response = await fetch(`https://reddit-react-46092-default-rtdb.firebaseio.com/posts/${reqid}.json`, {
+    const response = await fetch(`/subreddits/${reqid}`, {
         method: 'PUT',
         body: JSON.stringify(ms),
         headers:{

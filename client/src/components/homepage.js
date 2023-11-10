@@ -17,7 +17,7 @@ const HomePage = (props)=>{
 
 
 async function handlesave(post){
-  const res = await fetch(`http://localhost:4000/posts`)
+  const res = await fetch(`/posts`)
 
       const R = await res.json();
 const reqid = Object.keys(R).find((key) => (
@@ -34,7 +34,7 @@ const id = auth.currentUser.uid
   }
 
 
-  const response = await fetch(`http://localhost:4000/posts/${post.pid}`, {
+  const response = await fetch(`/posts/${post.pid}`, {
       method: 'PUT',
       body: JSON.stringify(ms),
       headers:{

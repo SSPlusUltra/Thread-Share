@@ -36,7 +36,7 @@ const Communitydiv = (props)=>{
    
     async function handlejoin (){  
 
-      const res = await fetch(`http://localhost:4000/subreddits/${subThread.id}`)
+      const res = await fetch(`/subreddits/${subThread.id}`)
 
       const R = await res.json();
       console.log(R)
@@ -56,7 +56,7 @@ const Communitydiv = (props)=>{
 
     try {
       const response = await axios.put(
-        `http://localhost:4000/subreddits/${subThread.id}`,
+        `/subreddits/${subThread.id}`,
         ms,
         {
           headers: {
@@ -83,7 +83,7 @@ const Communitydiv = (props)=>{
 
 
     async function fetchsubs(){
-      const response = await fetch('http://localhost:4000/subreddits');
+      const response = await fetch('/subreddits');
     const dataR = await response.json();
     const extractedData = Object.keys(dataR).map((key) => ({
       title: dataR[key].title,
