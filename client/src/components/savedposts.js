@@ -14,7 +14,7 @@ const SavedPosts = (props)=>{
     },[data])
 
     async function fetchposts(){
-        const response = await fetch(`/posts`);
+        const response = await fetch(`http://localhost:4000/posts`);
       const postsR = await response.json();
       console.log(postsR)
       const extractedpostData = Object.keys(postsR).map((key) => ({
@@ -39,7 +39,7 @@ const SavedPosts = (props)=>{
 
     
 async function handlesave(post){
-    const res = await fetch(`/posts`)
+    const res = await fetch(`http://localhost:4000/posts`)
   
         const R = await res.json();
   const reqid = Object.keys(R).find((key) => (
@@ -56,7 +56,7 @@ async function handlesave(post){
     }
   
   
-    const response = await fetch(`/posts/${post.pid}`, {
+    const response = await fetch(`http://localhost:4000/posts/${post.pid}`, {
         method: 'PUT',
         body: JSON.stringify(ms),
         headers:{

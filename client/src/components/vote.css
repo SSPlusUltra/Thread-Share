@@ -25,7 +25,7 @@
 
 .upvote-active {
 
-  color: yellow; /* Choose a color for the active state */
+  color: #e03131; /* Choose a color for the active state */
   /* Add other styles for the active state as needed */
   cursor:pointer;
 
@@ -43,7 +43,7 @@
 .downvote-active {
   cursor: pointer;
  
-  color: yellow; /* Choose a color for the text in the active state */
+  color: #e03131; /* Choose a color for the text in the active state */
   /* Add other styles for the active state as needed */
 }
 

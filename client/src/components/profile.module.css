@@ -1,0 +1,27 @@
+.card {
+  background-color: var(--mantine-color-body);
+}
+
+.avatar {
+  border: rem(2px) solid var(--mantine-color-body);
+}
+
+.commentcontainer{
+  display: flex;
+  margin-top:20px;
+  justify-content: center;
+  gap:2em;
+  
+}
+
+.inner{
+  display: flex;
+  height: 250px;
+  gap:1em;
+  flex-direction: column;
+ width:80%;
+
+ 
+  
+
+}

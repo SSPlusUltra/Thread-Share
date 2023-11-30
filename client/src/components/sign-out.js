@@ -1,7 +1,8 @@
 import { auth } from "../firebase";
 import { signOut } from "firebase/auth";
 import './sign-out.css'
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { Button, Group, UnstyledButton } from "@mantine/core";
 
 
 const SignOut = (props)=>{
@@ -21,9 +22,9 @@ const loggingout = ()=>{
 }    
   return(
     <>
-     <form onSubmit={loggingout}>
-    <button className="sign-out-button">Logout</button>
-    </form>
+     <Group visibleFrom="md">
+        <UnstyledButton onClick={loggingout} variant="default">Sign out</UnstyledButton>
+          </Group>
     </>
   )
 

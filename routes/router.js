@@ -3,13 +3,15 @@ const router =express.Router()
 const schemas = require('../models/schemas')
 
 router.post('/subreddits', async(req,res)=>{
-    const { title, description, id, members } = req.body;
+    const { title, date, description, id, members } = req.body;
 
-    const subredditdata = {title:title, description:description, id:id, members:members}
+    const subredditdata = {title:title, date:date, description:description, id:id, members:members}
 
     const newSubreddits = new schemas.Subreddits(subredditdata)
 
     const saveSubreddits = await newSubreddits.save()
+
+    console.log(saveSubreddits);
 
     if(saveSubreddits){
         res.send('subreddits saved. Zankuu')
@@ -39,9 +41,9 @@ router.post('/posts', async (req, res) => {
 
 
 router.post('/comments', async(req,res)=>{
-    const{pid, Timeago, text, author} = req.body;
+    const{pid, Timeago, text, author, cid} = req.body;
 
-    const comments = {pid: pid, Timeago:Timeago, text:text, author:author}
+    const comments = {pid: pid, Timeago:Timeago, text:text, author:author, cid:cid}
 
     const newComments = new schemas.Comments(comments)
 
@@ -50,6 +52,22 @@ router.post('/comments', async(req,res)=>{
     if(saveComments){
         res.send('comments saved. Zankuu')
     }
+
+res.end();
+})
+
+router.post('/users', async(req,res)=>{
+  const{name, id, onlineStatus,createdFrom, signedinFrom, following, followers} = req.body;
+
+  const users = {name:name, id:id, onlineStatus:onlineStatus,createdFrom: createdFrom, signedinFrom: signedinFrom,  following:following, followers: followers}
+
+  const newUsers = new schemas.Users(users)
+
+  const saveUsers = await newUsers.save();
+
+  if(saveUsers){
+      res.send('users saved. Zankuu')
+  }
 
 res.end();
 })
@@ -81,6 +99,18 @@ router.get('/subreddits', async (req, res) => {
       const comments = await schemas.Comments.find(); // Assuming Comments is your model
   
       res.status(200).json(comments);
+    } catch (error) {
+      console.error('Error fetching comments:', error);
+      res.status(500).json({ error: 'An error occurred while fetching comments.' });
+    }
+  });
+
+
+  router.get('/users', async (req, res) => {
+    try {
+      const users = await schemas.Users.find(); // Assuming Comments is your model
+  
+      res.status(200).json(users);
     } catch (error) {
       console.error('Error fetching comments:', error);
       res.status(500).json({ error: 'An error occurred while fetching comments.' });
@@ -162,6 +192,69 @@ router.get('/subreddits', async (req, res) => {
     }
   });
 
+  router.post('/upload', async(req, res)=>{
+    const {temp, user} = req.body;
+    try{
+      schemas.Images.create({image: temp, user: user})
+
+      res.send({Status:"ok"})
+    }
+
+   catch(err){
+    res.send({Status:"error"})
+   }
+
+res.end();
+  });
+
+  router.get('/upload', async (req, res) => {
+    try {
+      const images = await schemas.Images.find(); // Assuming Comments is your model
+  
+      res.status(200).json(images);
+    } catch (error) {
+      console.error('Error fetching comments:', error);
+      res.status(500).json({ error: 'An error occurred while fetching comments.' });
+    }
+  });
+
+  router.delete('/subreddits/delete/:subId', async (req, res) => {
+    const subId = req.params.subId;
+  
+    try {
+      // Use findOneAndDelete to find and delete the subreddit with the given ID
+      const deletedSub = await schemas.Subreddits.findOneAndDelete({ id: subId });
+  
+      if (!deletedSub) {
+        // If no subreddit is found with the given ID, return a 404 Not Found response
+        return res.status(404).json({ error: 'Subreddit not found' });
+      }
+  
+      res.status(200).json(deletedSub);
+    } catch (error) {
+      console.error('Error deleting subreddit:', error);
+      res.status(500).json({ error: 'An error occurred while deleting the subreddit.' });
+    }
+  });
+
+  router.put('/users/:userId', async (req, res) => {
+    const userId = req.params.userId;
+    const updateData = req.body;
+  
+    try {
+      const updatedUser = await schemas.Posts.findOneAndUpdate({id:userId}, updateData, { new: true });
+  
+      if (!updatedUser) {
+        // If no post is found with the given ID, return a 404 Not Found response
+        return res.status(404).json({ error: 'user not found' });
+      }
+  
+      res.status(200).json(updatedUser);
+    } catch (error) {
+      console.error('Error updating post:', error);
+      res.status(500).json({ error: 'An error occurred while updating the user.' });
+    }
+  });
 
 
 

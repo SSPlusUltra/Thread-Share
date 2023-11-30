@@ -1,10 +1,50 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema;
 const { v4: uuidv4 } = require('uuid');
+
+
+const userSchema = new Schema({
+    name: {
+      type: String,
+    },
+    id:{
+        type: String,
+    },
+    onlineStatus:{
+
+        type: Boolean,
+
+    },
+    createdFrom:{
+    type: Date,
+    },
+    signedinFrom:{
+        type: Date,
+        },
+
+    following: {
+        type: Map,
+        of: Boolean,
+        required: true,
+        default: { 'initial': true },
+    },
+    followers: {
+        type: Map,
+        of: Boolean,
+        required: true,
+        default: { 'initial': true },
+    }
+});
+
+
+
 const subredditSchema = new Schema({
     title: {
         type: String,
         required: true,
+    },
+    date: {
+        type: Date
     },
     description: {
         type: String,
@@ -90,14 +130,29 @@ const CommentSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    cid:{
+        type:String
+    }
+});
+
+
+
+const ImageSchema = new mongoose.Schema({
+    image:  {
+        type: String,
+    },
+  user:  {
+       type:String,
+    }
 });
 
 const comments = mongoose.model('Comments', CommentSchema, 'comments')
 const posts = mongoose.model('Posts', postSchema, 'posts')
 const subreddits = mongoose.model('Subreddits', subredditSchema, 'subreddits')
+const images = mongoose.model('Images', ImageSchema, 'images');
+const users = mongoose.model('Users', userSchema, 'users');
+ 
 
-
-
-const mySchemas = {'Comments':comments, 'Posts':posts, 'Subreddits':subreddits}
+const mySchemas = {'Comments':comments, 'Posts':posts, 'Subreddits':subreddits, 'Images':images, 'Users':users}
 
 module.exports = mySchemas

@@ -3,21 +3,23 @@
   flex-direction: row;
   color:white;
   width:100%;
-  overflow:auto;
-  background-color:#303030;
-  height:230px;
 
-  border:solid white 1px;
+  height:auto;
+
+  border: solid 2px #373a40;
+  border-radius: 5px;
+  padding-left: 5px;
+
 }
 
 .post-footer{
-  background-color: #3d3d3d;
+ 
 }
 
 .right-part{
   display: flex;
   flex-direction: column;
-gap: 0.7em;
+gap: 0.25em;
 margin-left: 5px;
 
 }
@@ -25,21 +27,36 @@ margin-left: 5px;
 
 
 .post-content{
-  margin-bottom: 35px;;
+
   padding-right: 20px;
+ 
+
 
 }
 
 .comments-main{
-  color:white
+  color:white;
+  text-decoration: none;
+
 }
 
 .footer{
   display: flex;
-  margin-left: 150px;
+  margin-bottom: 10px;
+  justify-content: flex-start;
+  gap:1.2em;
+  padding-top:10px;
+
+
 
 }
 
 .bookmark-main{
   cursor: pointer;
+}
+
+.comments{
+  text-decoration: none;
+  display: flex;
+  flex-direction: row;
 }

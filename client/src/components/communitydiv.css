@@ -1,15 +1,12 @@
 .community-container{
-    background-color: #3d3d3d;
-    width:200px;
+    
+    width:auto;
     display: flex;
     align-items: center;
-    overflow:auto;
-    border:solid white 1px;
-    height:400px;
+    height:auto;
     flex-direction: column;
     justify-content: flex-start;
     gap:0.75em;
-    margin-bottom: 20px;
     
     
     
@@ -49,10 +46,11 @@
   .join-sub{
     background-color: blue;
     width: 80px;
-    border-radius: 10px;
+    border-radius: 20px;
     align-content: center;
     padding-bottom:4px ;
     color: white;
     cursor:pointer;
     border:solid white 2px;
+    height: 30px;
   }

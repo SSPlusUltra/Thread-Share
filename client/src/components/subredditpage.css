@@ -53,15 +53,20 @@
    
   }
 
-  .zi{
-    width:30%;
-    z-index:-1;
-   
-  }
 
   .sp-sp{
     display: flex;
     flex-direction: column;
     gap:1em;
     width:80%;
+  }
+
+  @media screen and (max-width: 1050px) {
+    /* Your styles here */
+    .sp-sp{
+      display: flex;
+      flex-direction: column;
+      gap:1em;
+      width:100%;
+    }
   }

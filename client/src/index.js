@@ -4,11 +4,16 @@ import reportWebVitals from './reportWebVitals'
 import { BrowserRouter, HashRouter} from 'react-router-dom'
 import App from './App'
 import './index.css'
+import { ColorSchemeScript, MantineProvider, Text } from '@mantine/core';
+
 
 ReactDOM.render(
+
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+    <MantineProvider forceColorScheme="dark">
+      <App /> 
+      </MantineProvider>
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')

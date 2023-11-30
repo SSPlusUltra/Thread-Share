@@ -19,6 +19,13 @@ import { auth } from './firebase';
 import SavedPosts from './components/savedposts';
 import JoinedSubs from './components/joinedsubs';
 import axios from 'axios';
+import { MantineProvider, Text } from '@mantine/core';
+import { HeaderMegaMenu } from './components/HeaderMegaMenu';
+import AllSubs from './components/allsubreddits';
+import Communitycard from './components/communitycard';
+import { Users } from './components/userspage';
+import UserProfile from './components/userprofilepage';
+import SelectDiff from './components/segmentedcontrol';
 const arr = []
 const pdata= []
 function App() {
@@ -28,13 +35,7 @@ const[isLoggedin, setIsLoggedin] = useState('');
 const navigate = useNavigate();
 const [cl, setcl] = useState(false);
 
-useEffect(()=>{
-    fetchsubs();
-  },[data])
 
-  useEffect(()=>{
-    fetchposts();
-  },[postdata])
   useEffect(() => {
     const listen = onAuthStateChanged(auth, (user) => {
            
@@ -54,7 +55,7 @@ useEffect(()=>{
 
   async function subhandler(movie) {
     try {
-      const response = await axios.post('/subreddits', movie, {
+      const response = await axios.post('http://localhost:4000/subreddits', movie, {
         headers: {
           'Content-Type': 'application/json'
         }
@@ -75,10 +76,32 @@ useEffect(()=>{
   }
   
 
+  async function uploadImage(img){
+    try {
+      const response = await axios.post('http://localhost:4000/subreddits', img, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+  
+      if (response.status === 200) {
+        const dataR = response.data;
+        // Do something with dataR if needed
+      } else {
+        // Handle the error here, e.g., display an error message
+        console.error('Error:', response.status, response.statusText);
+      }
+    } catch (error) {
+      // Handle Axios or other errors
+      console.error('Axios or other error:', error);
+      alert(error)
+    }
+  }
+
 
   async function posthandler(pdata) {
     try {
-      const response = await axios.post('/posts', pdata, {
+      const response = await axios.post('http://localhost:4000/posts', pdata, {
         headers: {
           'Content-Type': 'application/json'
         }
@@ -95,7 +118,7 @@ useEffect(()=>{
   }
 
    async function updatevotehandler(id,pid,  Vote, voteType){
-    const res = await fetch(`/posts/${pid}`);
+    const res = await fetch(`http://localhost:4000/posts/${pid}`);
     const pd = await res.json();
     console.log(pd)
     id= auth.currentUser.uid;
@@ -133,7 +156,7 @@ useEffect(()=>{
   
   try {
     const response = await axios.put(
-      `/posts/${pid}`,
+      `http://localhost:4000/posts/${pid}`,
       pd,
       {
         headers: {
@@ -159,37 +182,48 @@ useEffect(()=>{
 
   
 
-  async function fetchsubs(){
-    const response = await fetch('/subreddits');
-  const dataR = await response.json();
-  const extractedData = Object.keys(dataR).map((key) => ({
-    title: dataR[key].title,
-    description: dataR[key].description,
-    id: dataR[key].id,
-    members: dataR[key].members
-  }));
+   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const responseSubs = await axios.get('http://localhost:4000/subreddits');
+        const dataR = responseSubs.data;
+        const extractedData = Object.keys(dataR).map((key) => ({
+          title: dataR[key].title,
+          date: dataR[key].date,
+          description: dataR[key].description,
+          id: dataR[key].id,
+          members: dataR[key].members,
+        }));
+        setData(extractedData);
+      } catch (error) {
+        console.error('Error fetching subreddits:', error);
+        // Handle error appropriately
+      }
 
-  setData(extractedData)
-  }
+      try {
+        const responsePosts = await axios.get('http://localhost:4000/posts');
+        const postsR = responsePosts.data;
+        const extractedpostData = Object.keys(postsR).map((key) => ({
+          title: postsR[key].title,
+          description: postsR[key].description,
+          subreddit: postsR[key].subreddit,
+          vote: postsR[key].vote,
+          date: postsR[key].date,
+          id: postsR[key].id,
+          pid: postsR[key].pid,
+          upvotepressed: postsR[key].upvotepressed,
+          downvotepressed: postsR[key].downvotepressed,
+          members: postsR[key].members,
+        }));
+        setPostData(extractedpostData);
+      } catch (error) {
+        console.error('Error fetching posts:', error);
+        // Handle error appropriately
+      }
+    };
 
-  async function fetchposts(){
-    const response = await fetch('/posts');
-  const postsR = await response.json();
-  const extractedpostData = Object.keys(postsR).map((key) => ({
-    title: postsR[key].title,
-    description: postsR[key].description,
-    subreddit: postsR[key].subreddit,
-    vote: postsR[key].vote,
-    date: postsR[key].date,
-    id: postsR[key].id,
-    pid:postsR[key].pid,
-    upvotepressed: postsR[key].upvotepressed,
-    downvotepressed: postsR[key].downvotepressed,
-    members: postsR[key].members
-  }));
-
-  setPostData(extractedpostData)
-  }
+    fetchData(); // Call the fetchData function once during component mount
+  }, []); // Empty dependency array to run the effect only once during mount
   
 const onloggoin = (k)=>{
   setIsLoggedin(k)
@@ -244,10 +278,13 @@ const onloggoin = (k)=>{
 
   
   return (
-  <>
-     {isLoggedin? <Navbar formD={data} onc= {handlec}/> : ''}
+
+    <>
+  
+     {isLoggedin ?<Navbar formD={data}/>:<HeaderMegaMenu formD={data}/>}
 
      <Routes>
+     <Route  path="/" element={<SignUp/>} />
   <Route path="/signin" element={<SignIn  onL = {onloggoin}/>} />
   {isLoggedin && (
     <>
@@ -260,12 +297,15 @@ const onloggoin = (k)=>{
       <Route path="/commentpage" element={<CommentPage  formD={data} pdata={postdata} Uv={globalupvote} Dv={globaldownvote} />} />
       <Route path="/savedposts" element={<SavedPosts formD={postdata}/>} />
       <Route path="/joinedsubs" element={<JoinedSubs formD={data}/>} />
+      <Route path="/allsubs" element={<AllSubs/>} />
+      <Route path="/communitycard" element={<Communitycard formD={data}/>} />
+      <Route path="/users" element={<Users formD = {data}/>} />
+      <Route path="/userprofile" element={<UserProfile/>} />
+      <Route path="/segmentedcontrol" element={<SelectDiff pdata={postdata} Uv={globalupvote} Dv={globaldownvote}/>} />
+
     </>
   ) }
-  <Route path="/" element={<SignUp />} />
 </Routes>
-
-
       </>
   )   
 }

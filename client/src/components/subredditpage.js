@@ -6,14 +6,16 @@ import { useLocation } from 'react-router-dom';
 import PostDisplay from './displaypost';
 import Communitydiv from './communitydiv';
 import { auth } from '../firebase';
+import { useMediaQuery } from '@mantine/hooks';
 
 const SubredditPage = (props) => {
   const location = useLocation();
+  const isWideScreen = useMediaQuery('(min-width: 1050px)'); 
   const queryParams = new URLSearchParams(location.search);
   const title = queryParams.get('title');
   const subredditPosts = props.pdata.filter((post) => post.subreddit === title);
   async function handlesave(post){
-    const res = await fetch(`/subreddits`)
+    const res = await fetch(`http://localhost:4000/subreddits`)
   
         const R = await res.json();
   const reqid = Object.keys(R).find((key) => (
@@ -30,7 +32,7 @@ const SubredditPage = (props) => {
     }
   
   
-    const response = await fetch(`/subreddits/${reqid}`, {
+    const response = await fetch(`http://localhost:4000/subreddits/${reqid}`, {
         method: 'PUT',
         body: JSON.stringify(ms),
         headers:{
@@ -74,7 +76,7 @@ const SubredditPage = (props) => {
     
 
 
-<div className=  {props.cl? 'zi':'cd-cd' } ><Communitydiv title = {title} newD={props.formD}/></div>
+{isWideScreen&& <div className='cd-cd' ><Communitydiv title = {title} newD={props.formD}/></div>}
 </div>
 
    

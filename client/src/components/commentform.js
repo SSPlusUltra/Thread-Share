@@ -19,7 +19,7 @@ const CommentForm = (props) => {
     <form onSubmit={handleCommentChange}>
     <div className="comment-form-container"> {/* Add the container div */}
     <h3>comment as {auth.currentUser.displayName}</h3>
-      <input className='comment-form' value={comment} type='text' placeholder='Thoughts...?' onChange={(e) => setComment(e.target.value)}  />
+      <input className='comment-form' value={comment} type='text' placeholder='Thoughts...?' onChange={(e) => setComment(e.target.value)} />
       <button type='submit' className='postingg'>post</button> 
     </div>
     </form>

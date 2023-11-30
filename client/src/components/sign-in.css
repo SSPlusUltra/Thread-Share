@@ -1,0 +1,69 @@
+/* Styling for the entire form container */
+.signup-form {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: #f8f8f8;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    margin-top: 150px;
+
+  }
+  
+  /* Styling for the form headings */
+  .signup-form-title {
+    color: #333;
+  }
+  
+  /* Styling for form labels */
+  .form-label {
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+    font-weight: bold;
+  }
+  
+  /* Styling for form input fields */
+  .form-input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  /* Styling for the submit button */
+  .form-button {
+    width: 100%;
+    padding: 10px;
+    background: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  /* Style the submit button on hover */
+  .form-button:hover {
+    background: #0056b3;
+  }
+  
+  /* Add spacing between form fields */
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  .signin-link {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #007bff;
+    text-align: center;
+  }
+  
+  /* Style the link on hover */
+  .signin-link a:hover {
+    text-decoration: underline;
+  }

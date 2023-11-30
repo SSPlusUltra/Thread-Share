@@ -1,47 +1,69 @@
-import React from 'react';
-import './profile.css'
-import { Link, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
-import { auth } from '../firebase';
-import { storage } from '../firebase';
-import{ref,uploadBytes} from 'firebase/storage'
-import {v4} from 'uuid'
-import Threadlg from '../logo3.jpg'
+import { Card, Avatar, Text, Group, Button } from '@mantine/core';
+import classes from './profile.module.css';
+import Selectdiff from './segmentedcontrol';
 
-const Profile = (props) => {
-    const navigate = useNavigate();
-    const [img, setimg] = useState(Threadlg);
- const handlecl=()=>{
-  const subid = v4();
-  if(!img){
-    console.log('no image')
-  }
-  const imageRef = ref(storage, `${auth.currentUser.uid}/${subid}`)
-  uploadBytes(imageRef, img).then(()=>{
-    alert("image uploaded")
-  })
- }
-    const handleNavigate = (title) => {
-        // Replace "/subredditpage" with the appropriate route
-        navigate(`/subredditpage?title=${encodeURIComponent(title)}`);
+const stats = [
+  { value: '34K', label: 'Followers' },
+  { value: '187', label: 'Follows' },
+  { value: '1.6K', label: 'Posts' },
+];
 
-        
-      };
-    
-  return (
-    <div className="profile-container">
-     <h2 style={{'color': 'white'}}>Upload/edit image</h2>
-     <img src={img} alt="Logo" className="rounded-logo" />
-      <div className='int-d'>
-      <input onChange={(e)=>{
-           setimg(e.target.files[0]);
-
-      }} type='file'/>
-      <button className='last-bt' onClick={handlecl}>upload</button>
-      </div>
-      
+export default function Profile() {
+  const items = stats.map((stat) => (
+    <div key={stat.label}>
+      <Text ta="center" fz="lg" fw={500}>
+        {stat.value}
+      </Text>
+      <Text ta="center" fz="sm" c="dimmed" lh={1}>
+        {stat.label}
+      </Text>
     </div>
-  );
-};
+  ));
 
-export default Profile;
+  return (
+    <div>
+      <div style={{display:'flex', justifyContent:'center', gap:'1em', width:'100%',paddingLeft:'10px'}}>
+
+      
+
+<div className={classes.commentcontainer} style={{width:'50%'}}>
+<div style={{paddingBottom:'10px', width:'100%'}}  >     
+  <Selectdiff/>
+  </div>
+</div>
+
+<Card withBorder padding="xl" radius="md" className={classes.card} style={{width:'265px', height:'520px', marginTop:'70px', marginRight:'10px'}}>
+<Card.Section
+  h={140}
+  style={{
+    backgroundImage:
+      'url(https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=80)',
+  }}
+/>
+<Avatar
+  src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-9.png"
+  size={80}
+  radius={80}
+  mx="auto"
+  mt={-30}
+  className={classes.avatar}
+/>
+<Text ta="center" fz="lg" fw={500} mt="sm">
+  Bill Headbanger
+</Text>
+<Text ta="center" fz="sm" c="dimmed">
+  Fullstack engineer
+</Text>
+<Group mt="md" justify="center" gap={30}>
+  {items}
+</Group>
+<Button fullWidth radius="md" mt="xl" size="md" variant="default">
+  Follow
+</Button>
+</Card>
+</div>
+    </div>
+    
+    
+  );
+}

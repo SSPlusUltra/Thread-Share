@@ -1,5 +1,6 @@
 .generic-input{
     width: 100%;
+    background-color: #1A1B1E;
    
    
 }
@@ -11,7 +12,10 @@
 
 /* Change the background color of the input field with the placeholder "Search" */
 .input-meh{
-    color: #837676; /* Replace with your desired text color */
+    background-color: #1A1B1E; /* Replace with your desired text color */
     width:100%;
     height:30px;
+    border: solid 2px #373a40;
+    border-radius: 5px;
+    text-align: center;
 }
