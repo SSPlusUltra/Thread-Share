@@ -14,6 +14,7 @@ import { Button } from '@mantine/core';
 import { CommentHtml } from './commenthtml';
 import axios from 'axios';
 import { useMediaQuery } from '@mantine/hooks'; 
+import Communitycard from './communitycard';
 
 
 const comments = [];
@@ -30,49 +31,72 @@ const [data, setPostData] = useState(false);
 const location = useLocation();
 useEffect(()=>{
   fetchcomments();
-},[allComments])
+},[])
 
-useEffect(()=>{
-  fetchposts();
-},[data]);
+
+
+
+
+
+
+
+
 
 const isWideScreen = useMediaQuery('(min-width: 1050px)');
 
-async function fetchposts(){
-  try {
-    const responsePosts = await axios.get('http://localhost:4000/posts');
-    const postsR = responsePosts.data;
-    const extractedpostData = Object.keys(postsR).map((key) => ({
-      title: postsR[key].title,
-      description: postsR[key].description,
-      subreddit: postsR[key].subreddit,
-      vote: postsR[key].vote,
-      date: postsR[key].date,
-      id: postsR[key].id,
-      pid: postsR[key].pid,
-      upvotepressed: postsR[key].upvotepressed,
-      downvotepressed: postsR[key].downvotepressed,
-      members: postsR[key].members,
-    }));
-    setPostData(extractedpostData);
-  } catch (error) {
-    console.error('Error fetching posts:', error);
-    // Handle error appropriately
-  }
-}
-const updatestate= ()=>{
-  setrcomment('');
 
-}
+
+console.log(props.formD)
   const queryParams = new URLSearchParams(location.search);
   const id = queryParams.get('id');
   const plainId = id.replace(/"/g, '');
-  const post = data && data.filter((post) => post.pid === plainId)[0];
+  const post = props.pdata && props.pdata.filter((post) => post.pid === plainId)[0];
+
+  const fdata = post && props.formD && props.formD.find((item)=>item.title===post.subreddit)
+
+
+
+  const reqimg = fdata && props.imgdata && props.imgdata.find((item)=>item.user === fdata.id)
+  
   if (!post) {
     // Render a loading message or handle the case where the post is not found
     return <p>Loading...</p>;
   }
   
+
+  async function handlejoin() {
+  
+    const res = await fetch(`http://localhost:4000/subreddits/${fdata.id}`);
+    const R = await res.json();
+    const id = auth.currentUser.uid;
+    const ms = R;
+
+    if (!ms.members[id]) {
+      ms.members[id] = true;
+    } else {
+      ms.members[id] = false;
+    }
+
+
+    try {
+      const response = await axios.put(`http://localhost:4000/subreddits/${fdata.id}`, ms, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.status === 200) {
+        console.log('Post updated successfully.');
+      } else {
+        console.error('Error:', response.status, response.statusText);
+      }
+    } catch (error) {
+      console.error('Axios or JSON parsing error:', error);
+    }
+    if(props.ps){
+      window.location.reload();
+    }
+  }
  
 
 
@@ -93,9 +117,8 @@ const updatestate= ()=>{
   }
 
   async function handlesave(post){
-    const res = await fetch(`http://localhost:4000/posts`)
+    const R= props.pdata
   
-        const R = await res.json();
   const reqid = Object.keys(R).find((key) => (
     R[key].pid === post.pid
   ));
@@ -154,6 +177,9 @@ const handleComment=(comment, name)=>{
     <div className='inner-post'>
 
     <PostDisplay
+    udata={props.udata}
+    imgdata={props.imgdata}
+    formd={props.formD}
         id={post.id}
         v1={post.title}
         v2={post.description}
@@ -192,7 +218,7 @@ const handleComment=(comment, name)=>{
 <div>{allComments
 .filter(comment => comment.pid === post.pid) // Filter comments by matching post.pid
 .map((comment) => (
-<div style={{marginBottom:'10px'}}> <CommentHtml comment={comment}/> </div>
+<div style={{marginBottom:'10px'}}> <CommentHtml comment={comment} imgdata={props.imgdata} udata={props.udata}/> </div>
 ))}</div>
 
      
@@ -200,7 +226,7 @@ const handleComment=(comment, name)=>{
 
       {isWideScreen && (
           <div className='outer-cm-div'>
-            <Communitydiv className='comm' title={post.subreddit} newD={props.formD} />
+            <Communitycard subThread={fdata} reqimg={ reqimg && reqimg} pdata={props.pdata} udata={props.udata} onhandlejoin={handlejoin}/>
           </div>
         )}
 

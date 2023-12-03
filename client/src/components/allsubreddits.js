@@ -1,13 +1,17 @@
 import { useEffect, useState } from 'react';
 import Communitycard from './communitycard'
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 
-const AllSubs = ()=>{
+const AllSubs = (props)=>{
     const [data, setData] = useState();
     useEffect(()=>{
         fetchsubs();
     },[])
+
+
+
 
 async function fetchsubs(){
     try {
@@ -28,14 +32,30 @@ async function fetchsubs(){
 }
 
     return(
-        <div style={{display:'flex', flexWrap:'wrap',gap:'1.5em'}}>
-  {data&&data.map((item)=>(
-            <Communitycard subThread = {item}/>
-        ))}
+        <>
+        <div style={{textAlign: 'center', fontSize:'25px', fontWeight:'bold', marginTop:'10px'}}>All Communities</div>
+        <div style={{display:'flex', flexWrap:'wrap',gap:'10em', justifyContent:'center', padding:'20px'}}>
+ {data ? (
+  data.map((item) => {
+    const reqimg = props.imgdata &&  props.imgdata.find((img) => img.user === item.id);
+
+    return (
+      <Link key={item.id} style={{ marginBottom: '10px', textDecoration: 'none' }} to={{
+        pathname: '/subredditpage',
+        search: `?title=${encodeURIComponent(item.title)}`,
+      }}>
+        <Communitycard subThread={item} reqimg={reqimg} pdata={props.pdata} udata={props.udata}/>
+      </Link>
+    );
+  })
+) : (
+  "wow such empty :("
+)}
+
       
 
         </div>
-      
+      </>
     );
 };
 

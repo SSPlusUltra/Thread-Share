@@ -18,11 +18,12 @@ const Communitydiv = (props) => {
   const [jsonobj, setJsonobj] = useState(null);
   useEffect(() => {
     fetchsubs();
-  }, [reqsub]);
+  }, []);
 
 
   const id = auth.currentUser.uid;
-  const subThread = reqsub.find((item) => item.title === props.title) || <p>loading...</p>;
+  const subThread = props.title && reqsub && reqsub.find((item) => item.title === props.title) || <p>loading...</p>;
+
 
   async function handledeletesub(){
 
@@ -46,6 +47,7 @@ const Communitydiv = (props) => {
 
 
   async function handlejoin() {
+  
     const res = await fetch(`http://localhost:4000/subreddits/${subThread.id}`);
     const R = await res.json();
     const id = auth.currentUser.uid;
@@ -75,6 +77,9 @@ const Communitydiv = (props) => {
     } catch (error) {
       console.error('Axios or JSON parsing error:', error);
     }
+    if(props.ps){
+      window.location.reload();
+    }
   }
 
   async function fetchsubs() {
@@ -93,7 +98,7 @@ const Communitydiv = (props) => {
   }
 
   return (
-      <Communitycard onhandlejoin={handlejoin}  subThread={subThread} />
+      <Communitycard pdata = {props.pdata} reqimg={props.reqimg} ps = {props.ps} onhandlejoin={handlejoin}  subThread={props.title && subThread} udata={props.udata} />
   );
   }  
 export default Communitydiv;

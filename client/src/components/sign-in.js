@@ -1,13 +1,12 @@
-import { createUserWithEmailAndPassword,signInWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { createUserWithEmailAndPassword,onAuthStateChanged,signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../firebase";
 import SignIn from "./sign-in";
 import { Link } from "react-router-dom";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToggle, upperFirst } from '@mantine/hooks';
 import { useForm } from '@mantine/form';
 import '@mantine/core/styles.css';
-import './sign-in.css'
 import {
   TextInput,
   PasswordInput,
@@ -20,14 +19,82 @@ import {
   Checkbox,
   Anchor,
   Stack,
+  Avatar,
 } from '@mantine/core';
-
+import axios from "axios";
+import { trusted } from "mongoose";
+import LogoS from '../logo.png'
 const SignUp = (props)=>{
 
     const navigate = useNavigate();
+
+    const[data, setData] = useState();
+
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const responseSubs = await axios.get('http://localhost:4000/users');
+            const dataR = responseSubs.data;
+            const extractedData = Object.keys(dataR).map((key) => ({
+              name: dataR[key].name,
+              id: dataR[key].id,
+              onlineStatus: dataR[key].onlineStatus,
+              createdFrom: dataR[key].createdFrom,
+              signedinFrom: dataR[key].signedinFrom,
+              following: dataR[key].following,
+              followers: dataR[key].followers,
+      }));
+      setData(extractedData);
+    } catch (error) {
+      console.error('Error fetching subreddits:', error);
+      // Handle error appropriately
+    }
+
+  }
+  fetchData();
+  }, []);
+  console.log(data)
+
+  async function statushandle(udata){
+         
+    try {
+      const response = await axios.put(`http://localhost:4000/users/${auth.currentUser.uid}`, udata, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+  
+      // Axios automatically parses the JSON response, so you can access it directly
+      const dataR = response.data;
+  
+      // Do something with dataR if needed
+    } catch (error) {
+      // Handle Axios or other errors
+      console.error('Axios or other error:', error);
+    }
+
+  }
+
+    async function userhandler(udata) {
+      try {
+        const response = await axios.post('http://localhost:4000/users', udata, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+    
+        // Axios automatically parses the JSON response, so you can access it directly
+        const dataR = response.data;
+    
+        // Do something with dataR if needed
+      } catch (error) {
+        // Handle Axios or other errors
+        console.error('Axios or other error:', error);
+      }
+    }
     
 
-    const [type, toggle] = useToggle(['login', 'register']);
+    const [type, toggle] = useToggle([ 'login','register']);
     const form = useForm({
       initialValues: {
         userName:'',
@@ -50,20 +117,62 @@ const SignUp = (props)=>{
   
       try {
         if (type === 'register') {
+          if(!form.values.userName){
+            alert('enter username')
+            return;
+          }
+
+          if(form.values.password.length < 7){
+            alert('password should be atleast 7 characters')
+            return;
+          }
           const useCredential = await createUserWithEmailAndPassword(auth, form.values.email, form.values.password);
           const user = useCredential.user;
           await updateProfile(user, {
             displayName: form.values.userName,
           });
+          const data={
+            name: user.displayName ,
+            id:user.uid,
+            onlineStatus:true,
+            createdFrom:user.metadata.creationTime,
+            signedinFrom:user.metadata.lastSignInTime,
+            following:{ 'initial': true },
+            followers:{ 'initial': true },
+          }
+
+          user.displayName && userhandler(data);
           console.log(useCredential);
-          navigate('/homepage');
+          if(useCredential){
+            navigate('/homepage');
+          }
+          else{
+            <h4>Loading...</h4>
+          }
         } else if (type === 'login') {
           const useCredential = await signInWithEmailAndPassword(auth, form.values.email, form.values.password);
-          console.log(useCredential);
-          navigate('/homepage');
+          const currentUser = auth.currentUser;
+      
+          if (currentUser) {
+            const mdata = data.find((item) => item.id === currentUser.uid);
+      
+            if (mdata) {
+              mdata.onlineStatus = true;
+              mdata.signedinFrom = Date.now()
+              await statushandle(mdata);
+              console.log(mdata) // Ensure statushandle completes before navigating
+            } else {
+              console.error('User data not found for online status update');
+            }
+      
+            navigate('/homepage');
+            console.log(useCredential);
+          } else {
+            console.error('No current user after login');
+          }
         }
       } catch (error) {
-        console.error('Authentication error:', error);
+       alert(error)
       }
     };
 
@@ -73,21 +182,26 @@ const SignUp = (props)=>{
     return( 
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
       <Paper radius="md" p="xl"  withBorder {...props}>
-      <Text size="lg" fw={500}>
-        Welcome to Mantine, {type} with
+        <div style={{display:'flex', flexDirection:'column', alignItems:'center', gap:'0.5em'}}>
+        <Text style={{textAlign:'center'}} size="lg" fw={500}>
+        Welcome to ThreadShare
       </Text>
+      <Avatar src={LogoS}/>
+        </div>
+      
 
 
-      <Divider label="Or continue with email" labelPosition="center" my="lg" />
+      <Divider label="continue with email" labelPosition="center" my="xs" />
 
       <form onSubmit={handleAuth}>
         <Stack>
           {type === 'register' && (
             <TextInput
+            required
               label="Name"
               placeholder="Your name"
-              value={form.values.name}
-              onChange={(event) => form.setFieldValue('name', event.currentTarget.value)}
+              value={form.values.userName}
+              onChange={(event) => form.setFieldValue('userName', event.currentTarget.value)}
               radius="md"
             />
           )}
@@ -114,6 +228,7 @@ const SignUp = (props)=>{
 
           {type === 'register' && (
             <Checkbox
+            color="red"
               label="I accept terms and conditions"
               checked={form.values.terms}
               onChange={(event) => form.setFieldValue('terms', event.currentTarget.checked)}
@@ -127,7 +242,7 @@ const SignUp = (props)=>{
               ? 'Already have an account? Login'
               : "Don't have an account? Register"}
           </Anchor>
-          <Button type="submit" radius="xl">
+          <Button color="red" type="submit" radius="xl">
             {upperFirst(type)}
           </Button>
         </Group>

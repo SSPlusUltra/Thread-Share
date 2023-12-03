@@ -12,9 +12,10 @@ import axios from 'axios';
 import RTE from './rte';
 import { Ebutton } from './ebutton';
 import { Button } from '@mantine/core';
+import Communitycard from './communitycard';
 const CreatePosts =(props)=>{
   const [onShow, setonShow] = useState(false);
-  const [subThread, setsubThread] = useState(null)
+ 
 
 const location = useLocation();
 const queryParams = new URLSearchParams(location.search);
@@ -28,8 +29,7 @@ const [img, setimg] = useState();
 const [data, setData] = useState();
 const dropdownRef = useRef(null);
 
-
- 
+const [subThread, setsubThread] = useState(par? par : null)
  
   useEffect(() => {
    // Event listener to close the dropdown when clicked outside
@@ -48,7 +48,50 @@ const dropdownRef = useRef(null);
    };
  }, []);
 
- 
+ const fdata = props.formD && props.formD.find((item) => {
+  return item.title === subThread;
+});
+
+const reqimg = fdata && props.imgdata && props.imgdata.find((item)=>item.user===fdata.id)
+
+ async function handlejoin() {
+  
+    const res = await fetch(`http://localhost:4000/subreddits/${fdata.id}`);
+    const R = await res.json();
+    const id = auth.currentUser.uid;
+    const ms = R;
+
+    if (!ms.members[id]) {
+      ms.members[id] = true;
+    
+    } else {
+      ms.members[id] = false;
+  
+    }
+
+
+    try {
+      const response = await axios.put(`http://localhost:4000/subreddits/${fdata.id}`, ms, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.status === 200) {
+        console.log('Post updated successfully.');
+      } else {
+        console.error('Error:', response.status, response.statusText);
+      }
+    } catch (error) {
+      console.error('Axios or JSON parsing error:', error);
+    }
+    if(props.ps){
+      window.location.reload();
+    }
+  }
+
+
+
  const handleTitle = (event)=>{
     setTitle(event.target.value);
  }
@@ -122,6 +165,15 @@ const handled = (val)=>{
 
  const handleSubmit = (event)=>{
     event.preventDefault();
+    const reqobj = props.formD.find((item)=>item.title === subThread)
+    if(!reqobj.members[auth.currentUser.uid]){
+      alert('only members can create posts')
+      return
+    }
+    if(!newtitle){
+      alert('enter title');
+      return;
+    }
     const currentDate = new Date().toISOString(); 
     const data = {
         pid: v4(),
@@ -143,6 +195,7 @@ const handled = (val)=>{
 setTitle('')
 setDesc('')
 navigate(url);
+window.location.reload();
 
 
 
@@ -247,14 +300,14 @@ navigate(url);
 <div  style={{width:'40%'}}className="post-container">  
 <div style={{width:'90%', display:'flex', flexDirection:'column'}}>
   <h2 style={{marginTop:'5px', marginBottom:'0px'}} className='create-community'>Create a Post</h2>
-  <div style={{width:'50%'}}><Ebutton ondselect={handled} formD={props.formD}/></div>
+  <div style={{width:'50%'}}><Ebutton ondselect={handled} formD={props.formD} subT={par}/></div>
     <input style={{width:'100%'}} onChange={handleTitle} type='text-area' 
         placeholder='Title' className="input-field"  />
     <RTE formType={"post"} onpost={handleDesc}/>
     <Button style={{alignSelf:'flex-end', borderRadius:'30px', width:'100px'}} className='post-it' type='submit'>Create</Button>
     </div>
     </div>
-    <div className='uwu'> {subThread && <Communitydiv title={subThread} newD={props.formD}/>}  </div>
+    <div className='uwu'> {subThread && <Communitycard subThread={fdata} reqimg={reqimg} pdata={props.pdata} udata={props.udata} onhandlejoin={handlejoin}/>}  </div>
  
     </form>
 

@@ -19,10 +19,11 @@ import {
   Checkbox,
   Anchor,
   Stack,
+  Avatar,
 } from '@mantine/core';
 import axios from "axios";
 import { trusted } from "mongoose";
-
+import LogoS from '../logo.png'
 const SignUp = (props)=>{
 
     const navigate = useNavigate();
@@ -49,14 +50,15 @@ useEffect(() => {
       // Handle error appropriately
     }
 
-    fetchData();
   }
+  fetchData();
   }, []);
+  console.log(data)
 
   async function statushandle(udata){
          
     try {
-      const response = await axios.post(`http://localhost:4000/users/${auth.currentUser.uid}`, udata, {
+      const response = await axios.put(`http://localhost:4000/users/${auth.currentUser.uid}`, udata, {
         headers: {
           'Content-Type': 'application/json'
         }
@@ -115,6 +117,15 @@ useEffect(() => {
   
       try {
         if (type === 'register') {
+          if(!form.values.userName){
+            alert('enter username')
+            return;
+          }
+
+          if(form.values.password.length < 7){
+            alert('password should be atleast 7 characters')
+            return;
+          }
           const useCredential = await createUserWithEmailAndPassword(auth, form.values.email, form.values.password);
           const user = useCredential.user;
           await updateProfile(user, {
@@ -132,19 +143,36 @@ useEffect(() => {
 
           user.displayName && userhandler(data);
           console.log(useCredential);
-
-          navigate('/homepage');
+          if(useCredential){
+            navigate('/homepage');
+          }
+          else{
+            <h4>Loading...</h4>
+          }
         } else if (type === 'login') {
           const useCredential = await signInWithEmailAndPassword(auth, form.values.email, form.values.password);
-        
-          console.log(useCredential);
-          navigate('/homepage');
-          const mdata = data.find((item)=>item.id===auth.currentUser.uid)
-          mdata.onlineStatus = true;
-          statushandle(mdata);
+          const currentUser = auth.currentUser;
+      
+          if (currentUser) {
+            const mdata = data.find((item) => item.id === currentUser.uid);
+      
+            if (mdata) {
+              mdata.onlineStatus = true;
+              mdata.signedinFrom = Date.now()
+              await statushandle(mdata);
+              console.log(mdata) // Ensure statushandle completes before navigating
+            } else {
+              console.error('User data not found for online status update');
+            }
+      
+            navigate('/homepage');
+            console.log(useCredential);
+          } else {
+            console.error('No current user after login');
+          }
         }
       } catch (error) {
-        console.error('Authentication error:', error);
+       alert(error)
       }
     };
 
@@ -154,17 +182,22 @@ useEffect(() => {
     return( 
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
       <Paper radius="md" p="xl"  withBorder {...props}>
-      <Text size="lg" fw={500}>
-        Welcome to Mantine, {type} with
+        <div style={{display:'flex', flexDirection:'column', alignItems:'center', gap:'0.5em'}}>
+        <Text style={{textAlign:'center'}} size="lg" fw={500}>
+        Welcome to ThreadShare
       </Text>
+      <Avatar src={LogoS}/>
+        </div>
+      
 
 
-      <Divider label="Or continue with email" labelPosition="center" my="lg" />
+      <Divider label="continue with email" labelPosition="center" my="xs" />
 
       <form onSubmit={handleAuth}>
         <Stack>
           {type === 'register' && (
             <TextInput
+            required
               label="Name"
               placeholder="Your name"
               value={form.values.userName}
@@ -195,6 +228,7 @@ useEffect(() => {
 
           {type === 'register' && (
             <Checkbox
+            color="red"
               label="I accept terms and conditions"
               checked={form.values.terms}
               onChange={(event) => form.setFieldValue('terms', event.currentTarget.checked)}
@@ -208,7 +242,7 @@ useEffect(() => {
               ? 'Already have an account? Login'
               : "Don't have an account? Register"}
           </Anchor>
-          <Button type="submit" radius="xl">
+          <Button color="red" type="submit" radius="xl">
             {upperFirst(type)}
           </Button>
         </Group>

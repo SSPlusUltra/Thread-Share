@@ -23,6 +23,7 @@ export function Ebutton(props) {
         placeholder="Select a community"
         onChange={handleSelectChange}
         classNames={classes}
+        value={props.subT}
       />
     </>
   );

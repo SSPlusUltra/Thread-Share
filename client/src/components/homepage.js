@@ -10,6 +10,7 @@ const HomePage = (props)=>{
   useEffect(()=>{
     fetchposts();
   },[data])
+
  
 
 
@@ -35,7 +36,14 @@ async function fetchposts(){
       downvotepressed: postsR[key].downvotepressed,
       members: postsR[key].members,
     }));
-    setPostData(extractedpostData);
+    setPostData((prev)=>{
+      if(prev!=extractedpostData){
+        return extractedpostData
+      }
+      else{
+        return;
+      }
+    });
   } catch (error) {
     console.error('Error fetching posts:', error);
     // Handle error appropriately
@@ -77,6 +85,8 @@ return(
    
     {data&& data.map((post) => (
           <PostDisplay
+          formd={props.formd}
+          imgdata={props.imgdata}
         v1={post.title}
         v2={post.description}
         v3={post.pid}
@@ -89,6 +99,7 @@ return(
         key={post.pid}
         onhandle={handlesave}
         v6={post}
+        udata = {props.udata}
       />
         ))}
 

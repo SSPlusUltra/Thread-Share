@@ -22,6 +22,7 @@ import {
   IconUsersGroup,
   IconBookmarkFilled,
   IconBookmarksFilled,
+  IconUserHeart,
  
 } from '@tabler/icons-react';
 
@@ -58,6 +59,7 @@ import LogoS from '../logo.png'
 import axios from 'axios';
 
 import { signOut } from 'firebase/auth';
+import { IconUserCode } from '@tabler/icons-react';
 export default function Navbar(props){
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null);
@@ -71,48 +73,49 @@ const navigate = useNavigate();
   const [drawerOpened, { toggle: toggleDrawer, close: closeDrawer }] = useDisclosure(false);
   const [linksOpened, { toggle: toggleLinks }] = useDisclosure(false);
   const theme = useMantineTheme();
-  const [reqsub, setreqsub] = useState(props.formD)
+  const [reqsub, setreqsub] = useState(props.formd)
   const [Threadlogo, setThreadlogo] = useState()
   const [data, setData] = useState();
   const [isHovered, setIsHovered] = useState(false);
   const [opened, setOpened] = useState(false);
 
+    
+  
+  
+    async function statushandle(udata){
+           
+      try {
+        const response = await axios.put(`http://localhost:4000/users/${auth.currentUser.uid}`, udata, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+    
+        // Axios automatically parses the JSON response, so you can access it directly
+        const dataR = response.data;
+    
+        // Do something with dataR if needed
+      } catch (error) {
+        // Handle Axios or other errors
+        console.error('Axios or other error:', error);
+      }
+  
+    }
+  
 
-  useEffect(()=>{
-    fetchsubs();
-  },[])
-  useEffect(()=>{
-    fetchimgs();
-  },[])
+
+
 
   const isWideScreen = useMediaQuery('(min-width: 768px)');
-  
-  const fetchimgs = async () => {
-    try {
-      const responseSubs = await axios.get('http://localhost:4000/upload');
-      const dataR = responseSubs.data;
-      const extractedData = Object.keys(dataR).map((key) => ({
-        image: dataR[key].image,
-        user: dataR[key].user,
-      }));
-      setData(extractedData);
-      console.log(extractedData); // Log the extractedData
-    } catch (error) {
-      console.error('Error fetching subreddits:', error);
-      // Handle error appropriately
-    }
-  };
-  
 
 // Assuming this code is inside an asynchronous function or an async block
 
 
 
 // Now mockdata contains an array of resolved promises
-
   
-  const idata = data && data.map((item)=>{
-    const matchingReqSub = reqsub.find((req) => req.id === item.user);
+  const idata = props.imgdata && props.imgdata.map((item)=>{
+    const matchingReqSub = props.formd && props.formd.find((req) => req.id === item.user);
     const subreddit = matchingReqSub ? matchingReqSub.title : null;
   
     return {
@@ -122,27 +125,15 @@ const navigate = useNavigate();
   }).filter((item) => item.subreddit); 
 
 
-  async function fetchsubs(){
-    const response = await fetch('http://localhost:4000/subreddits');
-  const dataR = await response.json();
-  const extractedData = Object.keys(dataR).map((key) => ({
-    title: dataR[key].title,
-    description: dataR[key].description,
-    id: dataR[key].id,
-    members: dataR[key].members
-  }));
-  setreqsub(extractedData)
-}
-
-const links = data && idata.slice(0,6).map((item) => (
-  <Link  to={{
+const links = idata && idata.slice(0,6).map((item) => (
+  <Link style={{textDecoration:'none'}}  to={{
     pathname: '/subredditpage',
     search: `?title=${encodeURIComponent(item.subreddit)}`,
   }}  key={item.id} href="#" className="dropdown-link">{item.title}
    <UnstyledButton className={classes.subLink} key={item.title}>
     <div style={{ display: 'flex', alignItems: 'center' }}>
-      <img src={item.icon} style={{ borderRadius: '50%', width: '65px', height: '60px', marginTop: '15px' }} />
-      <Text size="sm" fw={500} style={{ marginLeft: '10px' }}>
+      <Avatar src={item.icon} size={50} mb={20} />
+      <Text size="sm" fw={500} style={{ marginLeft: '10px', marginBottom:'20px' }}>
         {item.subreddit}
       </Text>
     </div>
@@ -151,19 +142,33 @@ const links = data && idata.slice(0,6).map((item) => (
 
 ));
 
-const handlesignout = ()=>{
-  signOut(auth).then(() => {
-      console.log('sign-out successful')
-       window.location.href = '/';
-
-
+const handlesignout = async () => {
+          const currentUser = auth.currentUser;
       
+          if (currentUser) {
+            const mdata = props.udata.find((item) => item.id === currentUser.uid);
+      
+            if (mdata) {
+              mdata.onlineStatus = false;
+              mdata.signedinFrom = Date.now()
+              await statushandle(mdata);
+              console.log(mdata) // Ensure statushandle completes before navigating
+            } else {
+              console.error('User data not found for online status update');
+            }
+            auth.signOut();
+            navigate('/');
+        
+          } else {
+            console.error('No current user after login');
+          }
+}
+const requsers = props.imgdata && props.imgdata.filter((item)=>{
+  return item.user===auth.currentUser.uid
+}
+)
 
-    }).catch((error) => {
-      // An error happened.
-    });
-  
-} 
+const requser = requsers && requsers.slice(-1)[0]
 
   useEffect(() => {
     // Event listener to close the dropdown when clicked outside
@@ -201,10 +206,11 @@ const handlesignout = ()=>{
  <Box >
       <header className={classes.header}>
         <Group  justify="space-between" h="100%">
-        {isWideScreen && <Link style={{display:'flex', textDecoration:'none', color:'white',justifyContent:'center',alignItems:'center'}} to='/homepage'>
-    <img src={LogoS} className= "reddit-icon"style={{ borderRadius:'50%',width: '50px', height: '40px'}}></img>
+        { <Link style={{display:'flex', textDecoration:'none', color:'white',justifyContent:'center',alignItems:'center'}} to='/homepage'>
+    <Avatar  src={LogoS} className= "reddit-icon"/>
     <div style={{ fontFamily:'sans-serif', fontWeight:'bold',fontSize:'20px'}}>ThreadShare</div>
   </Link>}
+  {/* {!isWideScreen && <Link to='/homepage'><Avatar src={LogoS}/></Link>} */}
           <Group h="100%" gap={0} visibleFrom="sm">
             <HoverCard width={600} position="bottom" radius="md" shadow="md" withinPortal>
               <HoverCard.Target>
@@ -223,7 +229,7 @@ const handlesignout = ()=>{
               <HoverCard.Dropdown style={{ overflow: 'hidden' }}>
                 <Group justify="space-between" px="md">
                   <Text fw={500}>SubThreads</Text>
-                  <Anchor href="#" fz="xs">
+                  <Anchor href="/allsubs" fz="xs">
                     View all
                   </Anchor>
                 </Group>
@@ -267,7 +273,7 @@ const handlesignout = ()=>{
         >
         <Avatar
         size={30}
-          src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-8.png"
+          src={requser && requser.image}
           radius="xl"
         />
 
@@ -286,7 +292,10 @@ const handlesignout = ()=>{
     </UnstyledButton>
       </Menu.Target>
       <Menu.Dropdown style={{display:'flex', alignItems:'center', borderRadius:'5px', marginTop:'-16px',paddingTop:'10px', width:'250px', backgroundColor:'#1A1B1E',borderTopRightRadius:'0px',borderTopLeftRadius:'0px', borderTop: 'none'}}>
-      <Link to='/profile' style={{textDecoration:'none'}}  ><Menu.Item
+      <Link onClick={()=>{
+        navigate('/profile')
+        window.location.reload();
+      }} style={{textDecoration:'none'}}  ><Menu.Item
          style={{width:'240px'}}
           leftSection={
             <IconUser
@@ -315,7 +324,10 @@ const handlesignout = ()=>{
         
         </Link>
 
-        <Link  to='/users' style={{textDecoration:'none'}} className='s'>
+        <Link onClick={()=>{
+          navigate('/people');
+          window.location.reload();
+        }} to='/people' style={{textDecoration:'none'}} className='s'>
         <Menu.Item
           leftSection={
             <IconUsers
@@ -344,6 +356,23 @@ const handlesignout = ()=>{
         Saved Posts
         </Menu.Item>
         </Link>
+
+        {!isWideScreen && <Link  to='/allsubs' style={{textDecoration:'none'}} className='s'>
+        <Menu.Item
+          leftSection={
+            <IconBuildingCommunity
+              style={{ width: rem(16), height: rem(16) }}
+              color={theme.colors.blue[6]}
+              stroke={1.5}
+            />
+          }
+        >
+         SubThreads
+        </Menu.Item>
+        </Link>}
+
+
+
         <Menu.Item onClick={handlesignout} 
         leftSection={
           <IconLogout
@@ -356,51 +385,18 @@ const handlesignout = ()=>{
           
           Signout
         </Menu.Item>
+
+        
       </Menu.Dropdown>
     </Menu>
 
 
           </div>
 
-          <Burger opened={drawerOpened} onClick={toggleDrawer} hiddenFrom="sm" />
+         
         </Group>
       </header>
 
-      <Drawer
-        opened={drawerOpened}
-        onClose={closeDrawer}
-        size="100%"
-        padding="md"
-        title="Navigation"
-        hiddenFrom="sm"
-        zIndex={1000000}
-      >
-        <ScrollArea h={`calc(100vh - ${rem(80)})`} mx="-md">
-          <Divider my="sm" />
-
-          <a href="#" className={classes.link}>
-            Home
-          </a>
-          <UnstyledButton className={classes.link} onClick={toggleLinks}>
-            <Center inline>
-              <Box component="span" mr={5}>
-                Features
-              </Box>
-              <IconChevronDown
-                style={{ width: rem(16), height: rem(16) }}
-                color={theme.colors.blue[6]}
-              />
-            </Center>
-          </UnstyledButton>
-          <Collapse in={linksOpened}>{links}</Collapse>
-          <a href="#" className={classes.link}>
-            Learn
-          </a>
-    
-        
-          <Divider my="sm" />
-        </ScrollArea>
-      </Drawer>
     </Box>
     <Divider
     thickness={2}

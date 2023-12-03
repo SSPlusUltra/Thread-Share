@@ -5,12 +5,20 @@ import { faCircleUp, faCircleDown } from '@fortawesome/free-solid-svg-icons';
 import { auth } from '../firebase';
 
 const Vote = (props)=>{
- const userId = auth.currentUser.uid;
+ const userId = auth.currentUser && auth.currentUser.uid;
     const handleupvoteclick = ()=>{
+      if(props.dupe){
+        alert('login to upvote')
+        return;
+      }
       props.Upclickhandle(userId, props.postId);
     }
 
     const handledownvoteclick = ()=>{
+      if(props.dupe){
+        alert('login to downvote')
+        return;
+      }
       props.Downclickhandle(userId, props.postId);
     }
 

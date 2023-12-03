@@ -172,6 +172,24 @@ router.get('/subreddits', async (req, res) => {
       res.status(500).json({ error: 'An error occurred while fetching the post.' });
     }
   });
+
+  router.get('/users/:userId', async (req, res) => {
+    const userId = req.params.userId;
+  
+    try {
+      const usr = await schemas.Users.findOne({id:userId}); // Assuming Posts is your model
+  
+      if (!usr) {
+        // If no post is found with the given ID, return a 404 Not Found response
+        return res.status(404).json({ error: 'user not found' });
+      }
+  
+      res.status(200).json(usr);
+    } catch (error) {
+      console.error('Error fetching post:', error);
+      res.status(500).json({ error: 'An error occurred while fetching the post.' });
+    }
+  });
   
   router.put('/subreddits/:subId', async (req, res) => {
     const subId = req.params.subId;
@@ -242,7 +260,7 @@ res.end();
     const updateData = req.body;
   
     try {
-      const updatedUser = await schemas.Posts.findOneAndUpdate({id:userId}, updateData, { new: true });
+      const updatedUser = await schemas.Users.findOneAndUpdate({id:userId}, updateData, { new: true });
   
       if (!updatedUser) {
         // If no post is found with the given ID, return a 404 Not Found response
@@ -250,6 +268,25 @@ res.end();
       }
   
       res.status(200).json(updatedUser);
+    } catch (error) {
+      console.error('Error updating post:', error);
+      res.status(500).json({ error: 'An error occurred while updating the user.' });
+    }
+  });
+
+  router.put('/upload/:userId', async (req, res) => {
+    const userId = req.params.userId;
+    const updateData = req.body;
+  
+    try {
+      const updatedImage = await schemas.Images.findOneAndUpdate({user:userId}, updateData, { new: true, upsert: true });
+  
+      if (!updatedImage) {
+        // If no post is found with the given ID, return a 404 Not Found response
+        return res.status(404).json({ error: 'user not found' });
+      }
+  
+      res.status(200).json(updatedImage);
     } catch (error) {
       console.error('Error updating post:', error);
       res.status(500).json({ error: 'An error occurred while updating the user.' });

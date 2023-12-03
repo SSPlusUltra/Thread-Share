@@ -15,16 +15,120 @@ const SelectDiff = (props) => {
   const [selectedItem, setSelectedItem] = useState('posts');
   const [pdata, setPostData] = useState(props.pdata)
   const [allComments, setAllComments] = useState(props.data);
+  const [imgdata, setimgData] = useState(props.pdata)
+  const [formd, setData] = useState(props.pdata)
+  const [udata, setDatau] = useState(props.pdata)
 const cdata = pdata && pdata.filter((item)=>{
     return (item.id === auth.currentUser.uid)
+})
+
+const cdatadiff = props.requserdiff && pdata && pdata.filter((item)=>{
+  return (item.id === props.requserdiff.id)
 })
 const usercomments = allComments && allComments.filter((item)=>{
     return(item.cid===auth.currentUser.uid);
 })
 
-console.log(allComments)
+const usercommentsdiff = props.requserdiff && allComments && allComments.filter((item)=>{
+  return(item.cid===props.requserdiff.id);
+})
 
-  
+console.log(udata)
+
+const findata = cdatadiff ? cdatadiff : cdata;
+const fincomments = usercommentsdiff ? usercommentsdiff : usercomments;
+
+async function handlesave(post){
+  const res = await fetch(`http://localhost:4000/posts`)
+
+      const R = await res.json();
+const reqid = Object.keys(R).find((key) => (
+  R[key].pid === post.pid
+));
+const id = auth.currentUser.uid
+ const ms = R[reqid];
+
+  if(!ms.members[id]){
+    ms.members[id] = true;
+  }
+  else{
+    ms.members[id] = false;
+  }
+
+
+  const response = await fetch(`http://localhost:4000/posts/${post.pid}`, {
+      method: 'PUT',
+      body: JSON.stringify(ms),
+      headers:{
+        'Content-Type': 'application/json'
+      }
+    });
+
+}
+
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const responseSubs = await axios.get('http://localhost:4000/users');
+            const dataR = responseSubs.data;
+            const extractedData = Object.keys(dataR).map((key) => ({
+              name: dataR[key].name,
+              id: dataR[key].id,
+              onlineStatus: dataR[key].onlineStatus,
+              createdFrom: dataR[key].createdFrom,
+              signedinFrom: dataR[key].signedinFrom,
+              following: dataR[key].following,
+              followers: dataR[key].followers,
+      }));
+      setDatau(extractedData);
+    } catch (error) {
+      console.error('Error fetching subreddits:', error);
+      // Handle error appropriately
+    }
+
+  }
+  fetchData();
+  }, []);
+
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const responseSubs = await axios.get('http://localhost:4000/subreddits');
+      const dataR = responseSubs.data;
+      const extractedData = Object.keys(dataR).map((key) => ({
+        title: dataR[key].title,
+        date: dataR[key].date,
+        description: dataR[key].description,
+        id: dataR[key].id,
+        members: dataR[key].members,
+      }));
+      setData(extractedData);
+    } catch (error) {
+      console.error('Error fetching subreddits:', error);
+      // Handle error appropriately
+    }
+
+    try {
+      const responseSubs = await axios.get('http://localhost:4000/upload');
+      const dataR = responseSubs.data;
+      const extractedData = Object.keys(dataR).map((key) => ({
+        image: dataR[key].image,
+        user: dataR[key].user,
+      }));
+      setimgData(extractedData);
+      console.log(extractedData); // Log the extractedData
+    } catch (error) {
+      console.error('Error fetching subreddits:', error);
+      // Handle error appropriately
+    }
+
+    
+  };
+
+  fetchData(); // Call the fetchData function once during component mount
+}, []); // Empty de
+
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -81,12 +185,16 @@ console.log(allComments)
     switch (selectedItem) {
       case 'posts':
         return(<div style={{marginTop:'10px'}}>
-            {(pdata && cdata.map((post) => (
+            {(pdata && findata.map((post) => (
             <Link style={{marginBottom:'10px'}} to={{
                 pathname: '/commentpage',
                 search: `?id=${encodeURIComponent(post.pid)}`,
               }} className="comments">
+                <div style={{width:'100%'}}>
          <PostDisplay
+          formd={formd}
+          imgdata={imgdata}
+          udata={udata}
           v1={post.title}
           v2={post.description}
           v3={post.pid}
@@ -97,9 +205,10 @@ console.log(allComments)
           upress = {post.upvotepressed}
           dpress = {post.downvotepressed}
           key={post.pid}
+          onhandle={handlesave}
           v6={post}
         />
-       
+       </div>
           </Link>
             )))}
         </div>);
@@ -107,7 +216,7 @@ console.log(allComments)
         return (
             <div style={{marginTop:'10px'}}>
                 {
-                   ( usercomments && usercomments.map((item)=>(
+                   ( usercomments && fincomments.map((item)=>(
                     <Link style={{textDecoration:'none'}} to={{
                         pathname: '/commentpage',
                         search: `?id=${encodeURIComponent(item.pid)}`,

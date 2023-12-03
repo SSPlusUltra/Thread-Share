@@ -26,6 +26,9 @@ import Communitycard from './components/communitycard';
 import { Users } from './components/userspage';
 import UserProfile from './components/userprofilepage';
 import SelectDiff from './components/segmentedcontrol';
+import People from './components/people';
+import Follow from './components/follow';
+import Dupehomepage from './components/dupehomepage';
 const arr = []
 const pdata= []
 function App() {
@@ -34,7 +37,32 @@ const [postdata, setPostData] = useState(pdata)
 const[isLoggedin, setIsLoggedin] = useState('');
 const navigate = useNavigate();
 const [cl, setcl] = useState(false);
+const[datau, setDatau] = useState();
+const[imgdata, setimgData] = useState();
 
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const responseSubs = await axios.get('http://localhost:4000/users');
+            const dataR = responseSubs.data;
+            const extractedData = Object.keys(dataR).map((key) => ({
+              name: dataR[key].name,
+              id: dataR[key].id,
+              onlineStatus: dataR[key].onlineStatus,
+              createdFrom: dataR[key].createdFrom,
+              signedinFrom: dataR[key].signedinFrom,
+              following: dataR[key].following,
+              followers: dataR[key].followers,
+      }));
+      setDatau(extractedData);
+    } catch (error) {
+      console.error('Error fetching subreddits:', error);
+      // Handle error appropriately
+    }
+
+  }
+  fetchData();
+  }, []);
 
   useEffect(() => {
     const listen = onAuthStateChanged(auth, (user) => {
@@ -220,6 +248,22 @@ const [cl, setcl] = useState(false);
         console.error('Error fetching posts:', error);
         // Handle error appropriately
       }
+
+      try {
+        const responseSubs = await axios.get('http://localhost:4000/upload');
+        const dataR = responseSubs.data;
+        const extractedData = Object.keys(dataR).map((key) => ({
+          image: dataR[key].image,
+          user: dataR[key].user,
+        }));
+        setimgData(extractedData);
+        console.log(extractedData); // Log the extractedData
+      } catch (error) {
+        console.error('Error fetching subreddits:', error);
+        // Handle error appropriately
+      }
+
+      
     };
 
     fetchData(); // Call the fetchData function once during component mount
@@ -281,27 +325,31 @@ const onloggoin = (k)=>{
 
     <>
   
-     {isLoggedin ?<Navbar formD={data}/>:<HeaderMegaMenu formD={data}/>}
+     {isLoggedin ?<Navbar imgdata = {imgdata} udata = {datau} formd={data}/>:<HeaderMegaMenu formD={data}/>}
 
      <Routes>
-     <Route  path="/" element={<SignUp/>} />
   <Route path="/signin" element={<SignIn  onL = {onloggoin}/>} />
+  <Route  path="/signup" element={<SignUp/>} />
+  <Route path="/" element={<Dupehomepage pdata={postdata} udata={datau} formD = {data} imgdata={imgdata}/>} />
   {isLoggedin && (
     <>
         <Route path="/signout" element={<SignOut  />} />
-      <Route path="/homepage" element={<HomePage pdata={postdata} Uv={globalupvote} Dv={globaldownvote} />} />
+      <Route path="/homepage" element={<HomePage pdata={postdata} Uv={globalupvote} Dv={globaldownvote} imgdata = {imgdata} formd = {data} udata={datau} />} />
       <Route path="/form" element={<SubredditCreationForm onsubreddit={subhandler} />} />
-      <Route path="/profile" element={<Profile data={data} />} />
-      <Route path="/subredditpage" element={<SubredditPage formD={data} pdata={postdata} Uv={globalupvote} Dv={globaldownvote}  cl = {cl}/>} />
-      <Route path="/postcreate" element={<CreatePosts oncreate={posthandler} formD={data} />} />
-      <Route path="/commentpage" element={<CommentPage  formD={data} pdata={postdata} Uv={globalupvote} Dv={globaldownvote} />} />
+      <Route path="/profile" element={<Profile imgdata = {imgdata} data={data} udata={datau} pdata={postdata} />} />
+      <Route path="/subredditpage" element={<SubredditPage formD={data} pdata={postdata} Uv={globalupvote} Dv={globaldownvote}  cl = {cl} imgdata = {imgdata} udata={datau}/>} />
+      <Route path="/postcreate" element={<CreatePosts pdata={postdata} oncreate={posthandler} formD={data} imgdata ={imgdata} udata={datau}/>} />
+      <Route path="/commentpage" element={<CommentPage  formD={data} pdata={postdata} Uv={globalupvote} Dv={globaldownvote} imgdata={imgdata} udata={datau}/>} />
       <Route path="/savedposts" element={<SavedPosts formD={postdata}/>} />
-      <Route path="/joinedsubs" element={<JoinedSubs formD={data}/>} />
-      <Route path="/allsubs" element={<AllSubs/>} />
-      <Route path="/communitycard" element={<Communitycard formD={data}/>} />
-      <Route path="/users" element={<Users formD = {data}/>} />
-      <Route path="/userprofile" element={<UserProfile/>} />
+      <Route path="/joinedsubs" element={<JoinedSubs imgdata = {imgdata} pdata={postdata} udata={datau}/>} />
+      <Route path="/allsubs" element={<AllSubs imgdata = {imgdata} pdata={postdata} udata={datau} formD={data}/>} />
+      <Route path="/communitycard" element={<Communitycard formd={data}/>} />
+      <Route path="/userprofile" element={<UserProfile udata = {datau} imgdata={imgdata}/>} />
       <Route path="/segmentedcontrol" element={<SelectDiff pdata={postdata} Uv={globalupvote} Dv={globaldownvote}/>} />
+      <Route path="/people" element={<People udata={datau} formD = {data} imgdata={imgdata}/>} />
+      <Route path="/follow" element={<Follow udata={datau} formD = {data} imgdata={imgdata}/>} />
+
+
 
     </>
   ) }

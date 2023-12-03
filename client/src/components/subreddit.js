@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 import './subreddit.css'
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { auth, storage } from '../firebase';
 import{ref,uploadBytes} from 'firebase/storage'
 import {v4} from 'uuid'
 import temp from '../logo3.jpg'
 import RTE from './rte';
 import { Button } from '@mantine/core';
+import axios from 'axios';
 const SubredditCreationForm = (props) => {
  const [newtitle, setTitle] = useState('')
  const [newdesc, setDesc] = useState('')
  const [imageUpload, setImageUpload] = useState();
+ const location = useLocation();
 const navigate = useNavigate()
  const handleTitle = (event)=>{
     setTitle(event.target.value);
@@ -24,16 +26,7 @@ const navigate = useNavigate()
  }
 
 
- async function uploadImage(sid){
-  const response = await fetch(`http://localhost:4000/upload`, {
-        method: 'POST',
-        body: JSON.stringify({temp: imageUpload, user:sid}),
-        headers:{
-          'Content-Type': 'application/json'
-        }
-      });
-      alert("image uploaded")
-}
+
 
 
 const handleFileChange = (e) => {
@@ -49,16 +42,29 @@ const handleFileChange = (e) => {
 }
 
 
- const handleSubmit = (event)=>{
+ const handleSubmit = async (event)=>{
     event.preventDefault();
+    if(!newtitle){
+      alert('Enter title')
+      return;
+      
+    }
     const subid = v4();
     if(!imageUpload){
       console.log('no image')
     }
-    else{
-      uploadImage(subid);
-    }
     const currentDate = new Date().toISOString();
+
+
+    const response = await fetch(`http://localhost:4000/upload`, {
+      method: 'POST',
+      body: JSON.stringify({temp: imageUpload, user:subid}),
+      headers:{
+        'Content-Type': 'application/json'
+      }
+    });
+
+
     const data = {
         title: "t/"+newtitle,
         date: currentDate,
@@ -66,12 +72,35 @@ const handleFileChange = (e) => {
         id: subid,
         members:{'initial': true},
     }
-props.onsubreddit(data);
-const subredditTitle = encodeURIComponent(data.title);
-const url = `/subredditpage?title=${subredditTitle}`;
+    alert("image uploaded")
+
+
+    try {
+      const response = await axios.post('http://localhost:4000/subreddits', data, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+  
+      if (response.status === 200) {
+        const dataR = response.data;
+        // Do something with dataR if needed
+      } else {
+        // Handle the error here, e.g., display an error message
+        console.error('Error:', response.status, response.statusText);
+      }
+    } catch (error) {
+      // Handle Axios or other errors
+      console.error('Axios or other error:', error);
+      alert(error)
+    }
+
+
+const subredditTitle = data && encodeURIComponent(data.title);
+const url = data && `/subredditpage?title=${subredditTitle}`;
 setTitle('')
 setDesc('')
-navigate(url)
+navigate('/allsubs')
     
 
  }
@@ -79,10 +108,16 @@ navigate(url)
   <form className='jp' onSubmit={handleSubmit}> 
   <div className="post-container">  
   <h2 className='create-community'>Create Community</h2>
-    <input onChange={handleTitle} type='text-area' 
+  <div>
+
+  <input onChange={handleTitle} type='text-area' 
         placeholder='Commmunity-name' className="input-field"  />
     {/* <input onChange={handleDesc}type='text-area' placeholder='About subthread(optional)' className="input-field-large" /> */}
     <RTE formType={"subreddit"} ontext={handleDesc}/>
+
+
+
+  </div>
     <div className='community-icon'>
     <label style={{ color: 'white', margin:'10px'}}>choose community icon:</label>
     <input onChange={handleFileChange} type='file' className='imagee' style={{cursor:'pointer'}}/>

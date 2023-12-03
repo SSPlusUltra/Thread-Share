@@ -12,6 +12,9 @@ import {
 import { TextInputProps, ActionIcon, useMantineTheme } from '@mantine/core';
 import { IconSearch, IconArrowRight } from '@tabler/icons-react';
 import axios from 'axios';
+import moment from 'moment';
+import { auth } from '../firebase';
+import { Link } from 'react-router-dom';
 
 const data = [
     {
@@ -72,61 +75,39 @@ const data = [
     const [search, setSearch] = useState('');
     const theme = useMantineTheme();
 
-    const [userss, setData] = useState();
 
+const ddata = props.udata && props.udata
 
-
-    useEffect(() => {
-        const fetchData = async () => {
-          try {
-            const responseSubs = await axios.get('http://localhost:4000/users');
-            const dataR = responseSubs.data;
-            const extractedData = Object.keys(dataR).map((key) => ({
-              name: dataR[key].name,
-              id: dataR[key].id,
-              onlineStatus: dataR[key].onlineStatus,
-              createdFrom: dataR[key].createdFrom,
-              signedinFrom: dataR[key].signedinFrom,
-              following: dataR[key].following,
-              followers: dataR[key].followers,
-
-            }));
-            setData(extractedData);
-          } catch (error) {
-            console.error('Error fetching subreddits:', error);
-            // Handle error appropriately
-          }
-      
-          fetchData();
-        }
-        }, []);
-console.log(userss)
-
-    // const filteredData = userss && userss.filter(
-    //   (item) =>
-    //     item.name.toLowerCase().includes(search.toLowerCase()) ||
-    //     item.email.toLowerCase().includes(search.toLowerCase())
-    //   // Add more fields if you want to search in other properties
-    // );
+    const filteredData =props.udata && ddata.filter(
+      (item) =>{
+          console.log(item.name)
+       return  item.name.toLowerCase().includes(search.toLowerCase())
+      // Add more fields if you want to search in other properties
+      }
+    );
   
-    const rows = userss && userss.map((item) => (
+    const rows = filteredData &&filteredData.map((item) => {
+      const reqimgs = props.imgdata &&  props.imgdata.filter((obj)=> obj.user===item.id)
+      const reqimg = reqimgs && reqimgs.slice(-1)[0]
+      return(
       <Table.Tr key={item.name}>
         <Table.Td>
-          <Group gap="sm">
-            {/* <Avatar size={40} src={item.avatar} radius={40} /> */}
+        <Link style={{textDecoration:'none', color:'white'}} to={{
+          pathname: '/userprofile',
+          search: `?id=${encodeURIComponent(item.id)}`,
+        }}><Group gap="sm">
+            <Avatar size={40} src={reqimg && reqimg.image} radius={40} />
             <div>
               <Text fz="sm" fw={500}>
                 {item.name}
               </Text>
-              <Text fz="xs" c="dimmed">
-                {item.email}
-              </Text>
             </div>
           </Group>
+          </Link>
         </Table.Td>
   
-        <Table.Td>{item.createdFrom}</Table.Td>
-        <Table.Td>{item.signedinFrom}</Table.Td>
+        <Table.Td>{moment(item.createdFrom).fromNow()}</Table.Td>
+        <Table.Td>{ item.id === auth.currentUser.uid? 'now' : moment(item.signedinFrom).fromNow()}</Table.Td>
         <Table.Td>
           {item.onlineStatus ? (
             <Badge fullWidth variant="light">
@@ -139,7 +120,8 @@ console.log(userss)
           )}
         </Table.Td>
       </Table.Tr>
-    ));
+      )
+          });
   
     return (
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center',gap:'1em', padding:'10px'}}>
@@ -151,15 +133,14 @@ console.log(userss)
       value={search}
       rightSectionWidth={42}
       leftSection={<IconSearch style={{ width: rem(18), height: rem(18) }} stroke={1.5} />}
-      
-      {...props}
+ 
     />
         <ScrollArea style={{ width: '100%', maxWidth: '900px' }}>
         <Table style={{ minWidth: '485px' }}>
             <Table.Thead>
               <Table.Tr>
                 <Table.Th>Employee</Table.Th>
-                <Table.Th>Last active</Table.Th>
+                <Table.Th>Member since</Table.Th>
                 <Table.Th>Last active</Table.Th>
                 <Table.Th>Status</Table.Th>
               </Table.Tr>

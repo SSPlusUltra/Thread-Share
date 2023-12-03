@@ -1,19 +1,31 @@
 // SubredditPage.js
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './subredditpage.css'
 import { useLocation } from 'react-router-dom';
 import PostDisplay from './displaypost';
 import Communitydiv from './communitydiv';
 import { auth } from '../firebase';
 import { useMediaQuery } from '@mantine/hooks';
+import { Avatar } from '@mantine/core';
 
 const SubredditPage = (props) => {
+  const navigate = useNavigate();
   const location = useLocation();
   const isWideScreen = useMediaQuery('(min-width: 1050px)'); 
   const queryParams = new URLSearchParams(location.search);
   const title = queryParams.get('title');
-  const subredditPosts = props.pdata.filter((post) => post.subreddit === title);
+  const subredditPosts = title && props.pdata.filter((post) => post.subreddit === title);
+  const id =props.formD && props.formD.find((item)=>item.title===title)
+  const reqimg = id && props.imgdata && props.imgdata.find((item)=> item.user === id.id)
+
+  
+
+
+  
+
+
+
   async function handlesave(post){
     const res = await fetch(`http://localhost:4000/subreddits`)
   
@@ -44,14 +56,19 @@ const SubredditPage = (props) => {
 
   return (
     <div className='sp-cd'>
-      <div><h2 style={{'color':'white'}}>{title}</h2></div>
+      <div style={{display:'flex', alignItems:'center', justifyContent:'center', marginTop:'10px', gap:'0.5em'}}>
+        <Avatar src={reqimg && reqimg.image}/>
+        <h3 style={{color:'white'}}>{title}</h3></div>
       <div className='cd-sp'>
 
-<div className='sp-sp'>
+<div className='sp-sp' style={{marginBottom:'20px'}}>
 
 {subredditPosts.length > 0 && (
         subredditPosts.map((post) => (
           <PostDisplay  v1={post.title}
+          udata = {props.udata}
+          imgdata={props.imgdata}
+          formd={props.formD}
           v2={post.description}
           v3={post.pid}
           v4={post.vote}
@@ -76,7 +93,7 @@ const SubredditPage = (props) => {
     
 
 
-{isWideScreen&& <div className='cd-cd' ><Communitydiv title = {title} newD={props.formD}/></div>}
+{isWideScreen&& <div className='cd-cd' ><Communitydiv reqimg = {reqimg} title = {title} newD={props.formD} pdata={props.pdata} udata={props.udata}/></div>}
 </div>
 
    
@@ -85,10 +102,11 @@ const SubredditPage = (props) => {
 
 
 
-      <Link to={{
+      <Link  to={{
                   pathname: '/postcreate',
                   search: `?par=${encodeURIComponent(title)}`,
                 }}  className="add-post-btn">
+                  
         +
       </Link>
     </div>

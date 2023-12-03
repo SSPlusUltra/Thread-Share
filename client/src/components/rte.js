@@ -24,6 +24,7 @@ const RTE = (props) => {
   const editor = useEditor({
     extensions: [
       StarterKit,
+      Bold,
       Underline,
       Link,
       Superscript,
