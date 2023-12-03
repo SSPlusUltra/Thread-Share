@@ -56,7 +56,7 @@ const reqimg = fdata && props.imgdata && props.imgdata.find((item)=>item.user===
 
  async function handlejoin() {
   
-    const res = await fetch(`http://localhost:4000/subreddits/${fdata.id}`);
+    const res = await fetch(`/subreddits/${fdata.id}`);
     const R = await res.json();
     const id = auth.currentUser.uid;
     const ms = R;
@@ -71,7 +71,7 @@ const reqimg = fdata && props.imgdata && props.imgdata.find((item)=>item.user===
 
 
     try {
-      const response = await axios.put(`http://localhost:4000/subreddits/${fdata.id}`, ms, {
+      const response = await axios.put(`/subreddits/${fdata.id}`, ms, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -109,7 +109,7 @@ const reqimg = fdata && props.imgdata && props.imgdata.find((item)=>item.user===
  const uid = auth.currentUser.uid;
 
 async function uploadImage(){
-  const response = await fetch(`http://localhost:4000/upload`, {
+  const response = await fetch(`/upload`, {
         method: 'POST',
         body: JSON.stringify({temp: img, user:auth.currentUser.uid}),
         headers:{
@@ -124,7 +124,7 @@ useEffect(()=>{
 
 const fetchimgs = async () => {
   try {
-    const responseSubs = await axios.get('http://localhost:4000/upload');
+    const responseSubs = await axios.get('/upload');
     const dataR = responseSubs.data;
     const extractedData = Object.keys(dataR).map((key) => ({
       image: dataR[key].image,

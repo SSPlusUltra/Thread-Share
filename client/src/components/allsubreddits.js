@@ -15,7 +15,7 @@ const AllSubs = (props)=>{
 
 async function fetchsubs(){
     try {
-        const responseSubs = await axios.get('http://localhost:4000/subreddits');
+        const responseSubs = await axios.get('/subreddits');
         const dataR = responseSubs.data;
         const extractedData = Object.keys(dataR).map((key) => ({
           title: dataR[key].title,

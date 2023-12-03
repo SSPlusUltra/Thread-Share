@@ -12,7 +12,7 @@ const JoinedSubs = (props)=>{
 
     const[reqsub, setreqsub] = useState(props.formD)
     async function fetchsubs(){
-      const response = await fetch('http://localhost:4000/subreddits');
+      const response = await fetch('/subreddits');
     const dataR = await response.json();
     const extractedData = Object.keys(dataR).map((key) => ({
       title: dataR[key].title,
@@ -35,7 +35,7 @@ const fdata = reqsub && reqsub.filter((item) => {
 
 async function handlejoin(item) {
   
-  const res = await fetch(`http://localhost:4000/subreddits/${item.id}`);
+  const res = await fetch(`/subreddits/${item.id}`);
   const R = await res.json();
   const id = auth.currentUser.uid;
   const ms = R;
@@ -48,7 +48,7 @@ async function handlejoin(item) {
 
 
   try {
-    const response = await axios.put(`http://localhost:4000/subreddits/${item.id}`, ms, {
+    const response = await axios.put(`/subreddits/${item.id}`, ms, {
       headers: {
         'Content-Type': 'application/json',
       },

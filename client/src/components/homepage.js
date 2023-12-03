@@ -22,7 +22,7 @@ const HomePage = (props)=>{
   
 async function fetchposts(){
   try {
-    const responsePosts = await axios.get('http://localhost:4000/posts');
+    const responsePosts = await axios.get('/posts');
     const postsR = responsePosts.data;
     const extractedpostData = Object.keys(postsR).map((key) => ({
       title: postsR[key].title,
@@ -51,7 +51,7 @@ async function fetchposts(){
 }
 
 async function handlesave(post){
-  const res = await fetch(`http://localhost:4000/posts`)
+  const res = await fetch(`/posts`)
 
       const R = await res.json();
 const reqid = Object.keys(R).find((key) => (
@@ -68,7 +68,7 @@ const id = auth.currentUser.uid
   }
 
 
-  const response = await fetch(`http://localhost:4000/posts/${post.pid}`, {
+  const response = await fetch(`/posts/${post.pid}`, {
       method: 'PUT',
       body: JSON.stringify(ms),
       headers:{

@@ -27,7 +27,7 @@ const SubredditPage = (props) => {
 
 
   async function handlesave(post){
-    const res = await fetch(`http://localhost:4000/subreddits`)
+    const res = await fetch(`/subreddits`)
   
         const R = await res.json();
   const reqid = Object.keys(R).find((key) => (
@@ -44,7 +44,7 @@ const SubredditPage = (props) => {
     }
   
   
-    const response = await fetch(`http://localhost:4000/subreddits/${reqid}`, {
+    const response = await fetch(`/subreddits/${reqid}`, {
         method: 'PUT',
         body: JSON.stringify(ms),
         headers:{

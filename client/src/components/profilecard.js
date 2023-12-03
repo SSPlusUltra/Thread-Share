@@ -24,7 +24,7 @@ const Profilecard = React.forwardRef((props, ref)=>{
   },[])
 
  async function getlist(){
-  const flist = await fetch(`http://localhost:4000/users/${auth.currentUser.uid}`);
+  const flist = await fetch(`/users/${auth.currentUser.uid}`);
   const pd= await flist.json();
   setfl(pd)
 
@@ -78,7 +78,7 @@ console.log('props.requser.id:', props.requser?.id);
       async function handlefollow() {
       
           // Fetch the current user data
-          const res = await fetch(`http://localhost:4000/users/${auth.currentUser.uid}`);
+          const res = await fetch(`/users/${auth.currentUser.uid}`);
           const pd= await res.json();
       
          if(!pd.following[props.reqid])
@@ -89,7 +89,7 @@ console.log('props.requser.id:', props.requser?.id);
           }
       
           // Update the current user data
-          const response1 = await axios.put(`http://localhost:4000/users/${auth.currentUser.uid}`, pd, {
+          const response1 = await axios.put(`/users/${auth.currentUser.uid}`, pd, {
             headers: {
               'Content-Type': 'application/json',
             },
@@ -97,7 +97,7 @@ console.log('props.requser.id:', props.requser?.id);
       
 
           // Fetch the target user data
-          const resv = await fetch(`http://localhost:4000/users/${props.reqid}`);
+          const resv = await fetch(`/users/${props.reqid}`);
           const pdv = await resv.json();
       
           // Check if pdv.followers is undefined and initialize it as an object
@@ -111,7 +111,7 @@ console.log('props.requser.id:', props.requser?.id);
       
       
           // Update the target user data
-          const response2 = await axios.put(`http://localhost:4000/users/${props.reqid}`, pdv, {
+          const response2 = await axios.put(`/users/${props.reqid}`, pdv, {
             headers: {
               'Content-Type': 'application/json',
             },

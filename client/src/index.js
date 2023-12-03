@@ -10,11 +10,11 @@ import { ColorSchemeScript, MantineProvider, Text } from '@mantine/core';
 ReactDOM.render(
 
   <React.StrictMode>
-    <BrowserRouter>
+    <HashRouter>
     <MantineProvider forceColorScheme="dark">
       <App /> 
       </MantineProvider>
-    </BrowserRouter>
+    </HashRouter>
   </React.StrictMode>,
   document.getElementById('root')
 )

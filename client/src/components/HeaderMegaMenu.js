@@ -66,7 +66,7 @@ export function HeaderMegaMenu(props) {
 
 
   async function fetchsubs(){
-    const response = await fetch('http://localhost:4000/subreddits');
+    const response = await fetch('/subreddits');
   const dataR = await response.json();
   const extractedData = Object.keys(dataR).map((key) => ({
     title: dataR[key].title,

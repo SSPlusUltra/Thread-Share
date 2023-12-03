@@ -28,7 +28,7 @@ const Communitydiv = (props) => {
   async function handledeletesub(){
 
     try {
-      const response = await axios.delete(`http://localhost:4000/subreddits/delete/${subThread.id}`,{
+      const response = await axios.delete(`/subreddits/delete/${subThread.id}`,{
         headers: {
           'Content-Type': 'application/json',
         },
@@ -48,7 +48,7 @@ const Communitydiv = (props) => {
 
   async function handlejoin() {
   
-    const res = await fetch(`http://localhost:4000/subreddits/${subThread.id}`);
+    const res = await fetch(`/subreddits/${subThread.id}`);
     const R = await res.json();
     const id = auth.currentUser.uid;
     const ms = R;
@@ -63,7 +63,7 @@ const Communitydiv = (props) => {
 
 
     try {
-      const response = await axios.put(`http://localhost:4000/subreddits/${subThread.id}`, ms, {
+      const response = await axios.put(`/subreddits/${subThread.id}`, ms, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -83,7 +83,7 @@ const Communitydiv = (props) => {
   }
 
   async function fetchsubs() {
-    const response = await fetch('http://localhost:4000/subreddits');
+    const response = await fetch('/subreddits');
     const dataR = await response.json();
     const extractedData = Object.keys(dataR).map((key) => ({
       title: dataR[key].title,

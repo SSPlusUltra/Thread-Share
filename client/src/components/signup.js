@@ -33,7 +33,7 @@ const SignUp = (props)=>{
 useEffect(() => {
   const fetchData = async () => {
     try {
-      const responseSubs = await axios.get('http://localhost:4000/users');
+      const responseSubs = await axios.get('/users');
             const dataR = responseSubs.data;
             const extractedData = Object.keys(dataR).map((key) => ({
               name: dataR[key].name,
@@ -58,7 +58,7 @@ useEffect(() => {
   async function statushandle(udata){
          
     try {
-      const response = await axios.put(`http://localhost:4000/users/${auth.currentUser.uid}`, udata, {
+      const response = await axios.put(`/users/${auth.currentUser.uid}`, udata, {
         headers: {
           'Content-Type': 'application/json'
         }
@@ -77,7 +77,7 @@ useEffect(() => {
 
     async function userhandler(udata) {
       try {
-        const response = await axios.post('http://localhost:4000/users', udata, {
+        const response = await axios.post('/users', udata, {
           headers: {
             'Content-Type': 'application/json'
           }

@@ -50,7 +50,7 @@ export default function Profile(props) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const responsePosts = await axios.get('http://localhost:4000/posts');
+        const responsePosts = await axios.get('/posts');
         const postsR = responsePosts.data;
         const extractedpostData = postsR && Object.keys(postsR).map((key) => ({
           title: postsR[key].title,
@@ -71,7 +71,7 @@ export default function Profile(props) {
       }
       
       try {
-        const responseSubs = await axios.get('http://localhost:4000/upload');
+        const responseSubs = await axios.get('/upload');
         const dataR = responseSubs.data;
         const extractedData =dataR && Object.keys(dataR).map((key) => ({
           image: dataR[key].image,
@@ -106,7 +106,7 @@ const finrequser =  requser && props.requserdiff ? props.requserdiff : requser;
   console.log(props.udata)
 
   async function uploadImage(){
-    const response = await fetch(`http://localhost:4000/upload`, {
+    const response = await fetch(`/upload`, {
           method: 'POST',
           body: JSON.stringify({temp: imageUpload, user:auth.currentUser.uid}),
           headers:{

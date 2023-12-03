@@ -39,7 +39,7 @@ const findata = cdatadiff ? cdatadiff : cdata;
 const fincomments = usercommentsdiff ? usercommentsdiff : usercomments;
 
 async function handlesave(post){
-  const res = await fetch(`http://localhost:4000/posts`)
+  const res = await fetch(`/posts`)
 
       const R = await res.json();
 const reqid = Object.keys(R).find((key) => (
@@ -56,7 +56,7 @@ const id = auth.currentUser.uid
   }
 
 
-  const response = await fetch(`http://localhost:4000/posts/${post.pid}`, {
+  const response = await fetch(`/posts/${post.pid}`, {
       method: 'PUT',
       body: JSON.stringify(ms),
       headers:{
@@ -69,7 +69,7 @@ const id = auth.currentUser.uid
 useEffect(() => {
   const fetchData = async () => {
     try {
-      const responseSubs = await axios.get('http://localhost:4000/users');
+      const responseSubs = await axios.get('/users');
             const dataR = responseSubs.data;
             const extractedData = Object.keys(dataR).map((key) => ({
               name: dataR[key].name,
@@ -93,7 +93,7 @@ useEffect(() => {
 useEffect(() => {
   const fetchData = async () => {
     try {
-      const responseSubs = await axios.get('http://localhost:4000/subreddits');
+      const responseSubs = await axios.get('/subreddits');
       const dataR = responseSubs.data;
       const extractedData = Object.keys(dataR).map((key) => ({
         title: dataR[key].title,
@@ -109,7 +109,7 @@ useEffect(() => {
     }
 
     try {
-      const responseSubs = await axios.get('http://localhost:4000/upload');
+      const responseSubs = await axios.get('/upload');
       const dataR = responseSubs.data;
       const extractedData = Object.keys(dataR).map((key) => ({
         image: dataR[key].image,
@@ -132,7 +132,7 @@ useEffect(() => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const responsePosts = await axios.get('http://localhost:4000/posts');
+        const responsePosts = await axios.get('/posts');
         const postsR = responsePosts.data;
         const extractedpostData = Object.keys(postsR).map((key) => ({
           title: postsR[key].title,
@@ -153,7 +153,7 @@ useEffect(() => {
       }
     ;
     try{
-        const response = await axios.get('http://localhost:4000/comments');
+        const response = await axios.get('/comments');
         const commR =response.data;
         const extractedcommData = Object.keys(commR).map((key) => ({
           Timeago: commR[key].Timeago,

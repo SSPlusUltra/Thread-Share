@@ -85,7 +85,7 @@ const navigate = useNavigate();
     async function statushandle(udata){
            
       try {
-        const response = await axios.put(`http://localhost:4000/users/${auth.currentUser.uid}`, udata, {
+        const response = await axios.put(`/users/${auth.currentUser.uid}`, udata, {
           headers: {
             'Content-Type': 'application/json'
           }

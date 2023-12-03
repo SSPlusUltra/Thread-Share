@@ -24,7 +24,7 @@ const Dupehomepage = (props)=>{
       
     async function fetchposts(){
       try {
-        const responsePosts = await axios.get('http://localhost:4000/posts');
+        const responsePosts = await axios.get('/posts');
         const postsR = responsePosts.data;
         const extractedpostData = Object.keys(postsR).map((key) => ({
           title: postsR[key].title,

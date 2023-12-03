@@ -56,7 +56,7 @@ const handleFileChange = (e) => {
     const currentDate = new Date().toISOString();
 
 
-    const response = await fetch(`http://localhost:4000/upload`, {
+    const response = await fetch(`/upload`, {
       method: 'POST',
       body: JSON.stringify({temp: imageUpload, user:subid}),
       headers:{
@@ -76,7 +76,7 @@ const handleFileChange = (e) => {
 
 
     try {
-      const response = await axios.post('http://localhost:4000/subreddits', data, {
+      const response = await axios.post('/subreddits', data, {
         headers: {
           'Content-Type': 'application/json'
         }
