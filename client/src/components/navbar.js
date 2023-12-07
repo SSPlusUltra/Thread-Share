@@ -208,7 +208,7 @@ const requser = requsers && requsers.slice(-1)[0]
         <Group  justify="space-between" h="100%">
         { <Link style={{display:'flex', textDecoration:'none', color:'white',justifyContent:'center',alignItems:'center'}} to='/homepage'>
     <Avatar  src={LogoS} className= "reddit-icon"/>
-    <div style={{ fontFamily:'sans-serif', fontWeight:'bold',fontSize:'20px'}}>ThreadShare</div>
+    {isWideScreen && <div style={{ fontFamily:'sans-serif', fontWeight:'bold',fontSize:'20px'}}>ThreadShare</div>}
   </Link>}
   {/* {!isWideScreen && <Link to='/homepage'><Avatar src={LogoS}/></Link>} */}
           <Group h="100%" gap={0} visibleFrom="sm">
@@ -229,7 +229,7 @@ const requser = requsers && requsers.slice(-1)[0]
               <HoverCard.Dropdown style={{ overflow: 'hidden' }}>
                 <Group justify="space-between" px="md">
                   <Text fw={500}>SubThreads</Text>
-                  <Anchor href="/allsubs" fz="xs">
+                  <Anchor onClick={()=>{navigate('/allsubs')}} fz="xs">
                     View all
                   </Anchor>
                 </Group>

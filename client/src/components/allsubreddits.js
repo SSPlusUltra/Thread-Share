@@ -44,7 +44,7 @@ async function fetchsubs(){
         pathname: '/subredditpage',
         search: `?title=${encodeURIComponent(item.title)}`,
       }}>
-        <Communitycard subThread={item} reqimg={reqimg} pdata={props.pdata} udata={props.udata}/>
+        <Communitycard subThread={item} reqimg={reqimg} pdata={props.pdata}  udata={props.udata}/>
       </Link>
     );
   })

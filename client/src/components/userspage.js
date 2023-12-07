@@ -107,7 +107,7 @@ const ddata = props.udata && props.udata
         </Table.Td>
   
         <Table.Td>{moment(item.createdFrom).fromNow()}</Table.Td>
-        <Table.Td>{ item.id === auth.currentUser.uid? 'now' : moment(item.signedinFrom).fromNow()}</Table.Td>
+        <Table.Td>{ item.id === auth.currentUser.uid || item.onlineStatus? 'now' : moment(item.signedinFrom).fromNow()}</Table.Td>
         <Table.Td>
           {item.onlineStatus ? (
             <Badge fullWidth variant="light">

@@ -14,3 +14,11 @@
    align-items: center;
    padding-top:20px;
 }
+
+@media screen and (max-width: 767px) {
+
+   .hp{
+      width:90%;
+   }
+
+ }

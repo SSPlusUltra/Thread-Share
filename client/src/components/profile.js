@@ -153,7 +153,7 @@ const finreqpost = reqpostdiff ? reqpostdiff : reqpost
       <div style={{ display: 'flex', justifyContent: 'center', gap: '1em', width: '100%', paddingLeft: '10px' }}>
         <div className={classes.commentcontainer} style={{ width: '50%' }}>
           <div style={{ paddingBottom: '10px', width: '100%' }}>
-            <Selectdiff formd={props.data} imgdata={props.imgdata}  requserdiff={props.requserdiff } />
+            <Selectdiff formd={props.data} imgdata={props.imgdata}  requserdiff={props.requserdiff && props.requserdiff } />
           </div>
         </div>
         <Profilecard reqid = {props.reqid} reqpost = {finreqpost} requser={finrequser && finrequser} ref={fileInputRef} onhandlefile={handleFileChange} onupload={handleUpload} reqimg = {finreqimg} udata={props.udata} reqauth = {requser && requser} formd={props.data}/>

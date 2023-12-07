@@ -77,9 +77,7 @@ const Communitydiv = (props) => {
     } catch (error) {
       console.error('Axios or JSON parsing error:', error);
     }
-    if(props.ps){
       window.location.reload();
-    }
   }
 
   async function fetchsubs() {

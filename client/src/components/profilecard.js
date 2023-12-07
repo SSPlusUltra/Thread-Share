@@ -38,8 +38,8 @@ const Profilecard = React.forwardRef((props, ref)=>{
       { value: props.requser && props.requser.followers
         ? (Object.values(props.requser.followers).filter((value) => value).length)-1
         : '0', label: 'Followers' },
-        { value: fl && fl.following
-            ? (Object.values(fl.following).filter((value) => value).length)-1
+        { value: props.requser && props.requser.following
+            ? (Object.values(props.requser.following).filter((value) => value).length)-1
             : '0', label: 'Following' },
         { value: props.reqpost&& props.reqpost.length || '0', label: 'Posts' },
       ];
@@ -57,7 +57,7 @@ console.log('props.requser.id:', props.requser?.id);
 
 <Link style={{textDecoration:'none', color:'white'}} to={{
         pathname: stat.label==='Followers' || stat.label === 'Following' ? '/follow': '',
-        search: stat.label=== "Followers"? `?id=${encodeURIComponent(props.requser.id)}&text=${encodeURIComponent('Followers')}`: stat.label === 'Following'? `?id=${encodeURIComponent(props.requser.id)}&text=${encodeURIComponent('Following')}`: `?id=${encodeURIComponent(props.requser.id)}`
+        search: stat.label=== "Followers"? `?id=${encodeURIComponent(props.requser && props.requser.id)}&text=${encodeURIComponent('Followers')}`: stat.label === 'Following'? `?id=${encodeURIComponent(props.requser && props.requser.id)}&text=${encodeURIComponent('Following')}`: `?id=${encodeURIComponent( props.requser && props.requser.id)}`
       }} key={stat.label}>
       <Text ta="center" fz="lg" fw={500}>
   {stat.value}
@@ -139,7 +139,7 @@ return(
       }}
     />
     <Avatar
-      src={ props.reqimg && props.reqimg.image}
+      src={ props.reqimg ? props.reqimg.image : 'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-2.png'}
       alt="image Loading..."
       size={80}
       radius={80}
@@ -147,7 +147,7 @@ return(
       mt={-30}
       className={classes.avatar}
     />
-   {props.requser && props.requser.id && (
+   {props.requser && (
   <Text ta="center" fz="lg" fw={500}>
     {props.requser.name}
   </Text>

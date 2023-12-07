@@ -93,9 +93,7 @@ console.log(props.formD)
     } catch (error) {
       console.error('Axios or JSON parsing error:', error);
     }
-    if(props.ps){
       window.location.reload();
-    }
   }
  
 
