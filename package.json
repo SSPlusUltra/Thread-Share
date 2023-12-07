@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon"
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
@@ -28,10 +27,5 @@
     "path": "^0.12.7",
     "uuid": "^9.0.1"
   },
-  "nodemonConfig": {
-    "watch": ["client", "server"],
-    "ext": "js,json",
-    "ignore": ["client/build","node_modules"],
-    "exec": "cd client && npm run build && cd .. && node server.js"
-  }
+ 
 }
