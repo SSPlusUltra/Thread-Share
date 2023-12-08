@@ -66,7 +66,7 @@ console.log(props.formD)
 
   async function handlejoin() {
   
-    const res = await fetch(`http://localhost:4000/subreddits/${fdata.id}`);
+    const res = await fetch(`/subreddits/${fdata.id}`);
     const R = await res.json();
     const id = auth.currentUser.uid;
     const ms = R;
@@ -79,7 +79,7 @@ console.log(props.formD)
 
 
     try {
-      const response = await axios.put(`http://localhost:4000/subreddits/${fdata.id}`, ms, {
+      const response = await axios.put(`/subreddits/${fdata.id}`, ms, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -101,7 +101,7 @@ console.log(props.formD)
 
 
    async function fetchcomments(){
-    const response = await fetch('http://localhost:4000/comments');
+    const response = await fetch('/comments');
   const commR = await response.json();
   const extractedcommData = Object.keys(commR).map((key) => ({
     Timeago: commR[key].Timeago,
@@ -131,7 +131,7 @@ console.log(props.formD)
     }
   
   
-    const response = await fetch(`http://localhost:4000/posts/${post.pid}`, {
+    const response = await fetch(`/posts/${post.pid}`, {
         method: 'PUT',
         body: JSON.stringify(ms),
         headers:{
@@ -157,7 +157,7 @@ const handleComment=(comment, name)=>{
       cid: auth.currentUser.uid
     };
     // Add the new comment to the existing comments
-    const response = await fetch('http://localhost:4000/comments', {
+    const response = await fetch('/comments', {
       method: 'POST',
       body: JSON.stringify(newComment),
       headers:{
