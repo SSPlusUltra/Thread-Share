@@ -6,7 +6,7 @@ import Underline from '@tiptap/extension-underline';
 import TextAlign from '@tiptap/extension-text-align';
 import Superscript from '@tiptap/extension-superscript';
 import SubScript from '@tiptap/extension-subscript';
-import { Flex } from '@mantine/core';
+import { Flex, ScrollArea } from '@mantine/core';
 import '@mantine/tiptap/styles.css';
 import Placeholder from '@tiptap/extension-placeholder'
 import { MarkdownSerializer} from 'prosemirror-markdown';
@@ -53,7 +53,7 @@ const RTE = (props) => {
 
   return (
     <div >
-<RichTextEditor editor={editor} style={{height:'200px',width:'auto',wordBreak:'break-word'}}>
+        <RichTextEditor editor={editor} style={{height:'250px',width:'auto',wordBreak:'break-word'}}>
       <RichTextEditor.Toolbar sticky stickyOffset={60}>
         <RichTextEditor.ControlsGroup>
           <RichTextEditor.Bold />
@@ -106,8 +106,9 @@ const RTE = (props) => {
           >
           </div>
         )}
-
+      <ScrollArea pb={5} h={150}>
       <RichTextEditor.Content />
+      </ScrollArea>
     </RichTextEditor>
 
     </div>

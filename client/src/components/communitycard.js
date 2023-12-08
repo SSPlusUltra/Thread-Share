@@ -5,6 +5,7 @@ import { ScrollArea } from '@mantine/core';
 import { auth } from '../firebase';
 import moment from 'moment';
 import { useLocation } from 'react-router-dom';
+import { useMediaQuery } from '@mantine/hooks';
 
 
 
@@ -32,8 +33,10 @@ console.log(props.subThread)
     id: item.id,
     onlineStatus: item.onlineStatus,
   }));
-const isdisabled = location.pathname==='/allsubs'
 
+
+
+const isWideScreen = useMediaQuery('(min-width: 767px)');
 
 
   
@@ -97,9 +100,9 @@ const isdisabled = location.pathname==='/allsubs'
 
       <Card.Section className={classes.section}>
         <Group style={{display:'flex', flexDirection:'column', alignItems:'center'}} gap={30}>
-       <Tooltip disabled={!isdisabled} label='click on a community to join'>
+       <Tooltip disabled={!isWideScreen} label='click on a community to join'>
 
-       <Button disabled={isdisabled} color='red' onClick={handlejoinn} radius="xl" style={{width:'200px'}}>
+       <Button disabled={isWideScreen} color='red' onClick={handlejoinn} radius="xl" style={{width:'200px'}}>
       {props.subThread.members && props.subThread.members[auth.currentUser.uid] ? 'Joined' : 'Join'}
       </Button>
 

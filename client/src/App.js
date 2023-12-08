@@ -40,6 +40,40 @@ const [cl, setcl] = useState(false);
 const[datau, setDatau] = useState();
 const[imgdata, setimgData] = useState();
 
+
+
+// useEffect(() => {
+//   const handleBeforeUnload = (event) => {
+//     const userkey = sessionStorage.key(0)
+//     const userObjectString = sessionStorage.getItem(userkey);
+//     const userObject = JSON.parse(userObjectString);
+//  const unloadTimestamp = new Date(parseInt(userObject.lastLoginAt));
+//     if (unloadTimestamp) {
+//       console.log('Page is being refreshed');
+  
+     
+//     }
+//     else {
+//       // Assume it's a page close
+//       console.log('Page is being closed');
+//     }
+//     const confirmationMessage = 'Are you sure you want to leave?';
+
+//     // The event.clientY check is not reliable in React SPAs, so always show the confirmation
+//     event.returnValue = confirmationMessage;
+//     return confirmationMessage;
+//   };
+
+//   window.addEventListener('beforeunload', handleBeforeUnload);
+
+//   return () => {
+//     // Cleanup the event listener when the component unmounts
+//     window.removeEventListener('beforeunload', handleBeforeUnload);
+//   };
+// }, []);
+
+
+
 useEffect(() => {
   const fetchData = async () => {
     try {
@@ -64,11 +98,15 @@ useEffect(() => {
   fetchData();
   }, []);
 
+
+
   useEffect(() => {
     const listen = onAuthStateChanged(auth, (user) => {
            
         if (user) {
           setIsLoggedin(user)
+       
+
          } else {
           setIsLoggedin(null);
         }

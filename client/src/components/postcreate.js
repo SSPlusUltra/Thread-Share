@@ -13,6 +13,7 @@ import RTE from './rte';
 import { Ebutton } from './ebutton';
 import { Button } from '@mantine/core';
 import Communitycard from './communitycard';
+import { useMediaQuery } from '@mantine/hooks';
 const CreatePosts =(props)=>{
   const [onShow, setonShow] = useState(false);
  
@@ -137,15 +138,7 @@ const fetchimgs = async () => {
     // Handle error appropriately
   }
 };
- const handlecl = ()=>{
-  console.log(img)
-  uploadImage();
-
-
-    
-  
- }
-
+const isWideScreen = useMediaQuery('(min-width: 767px)');
 
  const handleFileChange = (e) => {
   const file = e.target.files[0];
@@ -291,31 +284,31 @@ window.location.reload();
       <input value={newdesc} onChange={(e)=>{
              setDesc(e.target.value)
       }} type='text' className='desc-fl' placeholder='Description(optional)'/>
-      <button type='submit' className='p-btn'>Create</button>
+      <button type='submit' className='p-btn'>Create</button> 
     </form> */}
 
 
 <form className='jp' style={{gap:'2em'}} onSubmit={handleSubmit}> 
 
-<div  style={{width:'40%'}}className="post-container">  
+<div className="post-container">  
 <div style={{width:'90%', display:'flex', flexDirection:'column'}}>
   <h2 style={{marginTop:'5px', marginBottom:'0px'}} className='create-community'>Create a Post</h2>
   <div style={{width:'50%'}}><Ebutton ondselect={handled} formD={props.formD} subT={par}/></div>
     <input style={{width:'100%'}} onChange={handleTitle} type='text-area' 
         placeholder='Title' className="input-field"  />
-    <RTE formType={"post"} onpost={handleDesc}/>
-    <Button style={{alignSelf:'flex-end', borderRadius:'30px', width:'100px'}} className='post-it' type='submit'>Create</Button>
+    <div style={{width:'100%'}}><RTE formType={"post"} onpost={handleDesc}/></div>
+    <Button type='submit'>Create</Button>
     </div>
     </div>
-    <div className='uwu'> {subThread && <Communitycard subThread={fdata} reqimg={reqimg} pdata={props.pdata} udata={props.udata} onhandlejoin={handlejoin}/>}  </div>
+    {isWideScreen && <div className='uwu'> {subThread && <Communitycard subThread={fdata} reqimg={reqimg} pdata={props.pdata} udata={props.udata} onhandlejoin={handlejoin}/>}  </div>}
  
     </form>
-
-
+ 
+ 
 </div>
 
 
-
+ 
 
 
 

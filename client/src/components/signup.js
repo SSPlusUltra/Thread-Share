@@ -30,6 +30,9 @@ const SignUp = (props)=>{
 
     const[data, setData] = useState();
 
+
+
+
 useEffect(() => {
   const fetchData = async () => {
     try {
