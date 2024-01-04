@@ -8,7 +8,7 @@ const UserProfile = (props)=>{
     const plainId = id && id.replace(/"/g, '');
     const requser = plainId && props.udata && props.udata.find((item) => item.id === plainId);
     return(
-   <Profile reqid={plainId} udata={props.udata} imgdata={props.imgdata}  requserdiff={requser} />
+   <Profile ouser={true} reqid={plainId} udata={props.udata} imgdata={props.imgdata}  requserdiff={requser} />
     );
 }
 

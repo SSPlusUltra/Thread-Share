@@ -30,10 +30,11 @@ import {
 } from '@tabler/icons-react';
 import classes from './HeaderMegaMenu.module.css';
 import LogoS from '../logo.png'
-import { Link } from 'react-router-dom';
-import { storage } from '../firebase';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { auth, storage } from '../firebase';
 import { useEffect, useState } from 'react';
 import { getDownloadURL, listAll, ref } from 'firebase/storage';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 
 
@@ -48,6 +49,7 @@ export function HeaderMegaMenu(props) {
   const theme = useMantineTheme();
   const [reqsub, setreqsub] = useState(props.formD)
   const [Threadlogo, setThreadlogo] = useState()
+  const navigate = useNavigate();
 
 
   useEffect(()=>{
@@ -75,6 +77,17 @@ export function HeaderMegaMenu(props) {
     members: dataR[key].members
   }));
   setreqsub(extractedData)
+}
+
+const handletestLogin = async()=>{
+    const useCredential = await signInWithEmailAndPassword(auth, "anishbu@gmail.com", "Atomiciaz1$");
+
+    if (useCredential) {
+      navigate('/homepage');
+      console.log(useCredential);
+    } else {
+      console.error('No current user after login');
+    }
 }
 
   const links = reqsub.map((item) => (
@@ -105,6 +118,7 @@ export function HeaderMegaMenu(props) {
           
 
           <Group >
+          <Link onClick={handletestLogin}><Button color='blue'>Test User Login</Button></Link>
           <Link to='/signin' style={{textDecoration:'none'}}><Button color='red'>Log in</Button></Link>
           <Link to='/signup'><Button color='blue'>Sign up</Button></Link>
           </Group>

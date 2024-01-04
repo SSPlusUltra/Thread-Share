@@ -130,7 +130,8 @@ const finrequser =  requser && props.requserdiff ? props.requserdiff : requser;
   const reqauth = props.udata && props.udata.find((item)=>item.id===auth.currentUser.uid)
 
 
-const finreqimg = reqimgdiff ? reqimgdiff : reqimg;
+
+const finreqimg = props.ouser ? (reqimgdiff ? reqimgdiff : 'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-2.png' ) : (reqimgdiff ? reqimgdiff : reqimg)
 
 const finreqpost = reqpostdiff ? reqpostdiff : reqpost
 
