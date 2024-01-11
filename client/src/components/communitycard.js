@@ -15,7 +15,7 @@ const reqpdata = props.subThread && props.pdata && props.pdata.filter((item)=>it
 
 const location = useLocation();
 
-console.log(props.subThread)
+
 
 
   const handlejoinn = ()=>{
@@ -34,6 +34,7 @@ console.log(props.subThread)
     onlineStatus: item.onlineStatus,
   }));
 
+  console.log(onlineMembers)
 
 
 const isWideScreen = useMediaQuery('(min-width: 767px)');
@@ -100,14 +101,10 @@ const isWideScreen = useMediaQuery('(min-width: 767px)');
 
       <Card.Section className={classes.section}>
         <Group style={{display:'flex', flexDirection:'column', alignItems:'center'}} gap={30}>
-       <Tooltip disabled={!isWideScreen} label='click on a community to join'>
 
-       <Button disabled={isWideScreen} color='red' onClick={handlejoinn} radius="xl" style={{width:'200px'}}>
+       <Button disabled={!isWideScreen} color='red' onClick={handlejoinn} radius="xl" style={{width:'200px'}}>
       {props.subThread.members && props.subThread.members[auth.currentUser.uid] ? 'Joined' : 'Join'}
       </Button>
-
-       </Tooltip>
-     
         </Group>
       </Card.Section>
 
