@@ -63,7 +63,7 @@ const SubredditPage = (props) => {
 
 <div className='sp-sp' style={{marginBottom:'20px'}}>
 
-{subredditPosts.length > 0 && (
+{subredditPosts && subredditPosts.length > 0 && (
         subredditPosts.map((post) => (
           <PostDisplay  v1={post.title}
           udata = {props.udata}
