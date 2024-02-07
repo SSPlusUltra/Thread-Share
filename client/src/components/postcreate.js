@@ -188,7 +188,7 @@ const handled = (val)=>{
 setTitle('')
 setDesc('')
 navigate(url);
-window.location.reload();
+
 
 
 
