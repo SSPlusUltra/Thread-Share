@@ -86,9 +86,7 @@ const reqimg = fdata && props.imgdata && props.imgdata.find((item)=>item.user===
     } catch (error) {
       console.error('Axios or JSON parsing error:', error);
     }
-    if(props.ps){
       window.location.reload();
-    }
   }
 
 
