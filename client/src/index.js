@@ -14,8 +14,8 @@ ReactDOM.render(
     <MantineProvider forceColorScheme="dark">
       <App /> 
       </MantineProvider>
-    </HashRouter>
-  </React.StrictMode>,
+    </HashRouter>  
+  </React.StrictMode> ,
   document.getElementById('root')
 )
 
