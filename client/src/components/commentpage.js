@@ -116,10 +116,12 @@ console.log(props.formD)
 
   async function handlesave(post){
     const R= props.pdata
+    console.log(R,post)
   
   const reqid = Object.keys(R).find((key) => (
     R[key].pid === post.pid
   ));
+  console.log(R[reqid])
   const id = auth.currentUser.uid
    const ms = R[reqid];
   
@@ -138,6 +140,7 @@ console.log(props.formD)
           'Content-Type': 'application/json'
         }
       });
+      window.location.reload();
   
   }
 const handleComment=(comment, name)=>{

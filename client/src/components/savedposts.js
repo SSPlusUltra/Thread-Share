@@ -16,7 +16,6 @@ const SavedPosts = (props)=>{
     async function fetchposts(){
         const response = await fetch(`/posts`);
       const postsR = await response.json();
-      console.log(postsR)
       const extractedpostData = Object.keys(postsR).map((key) => ({
         title: postsR[key].title,
         description: postsR[key].description,
@@ -32,8 +31,8 @@ const SavedPosts = (props)=>{
       setData(extractedpostData)
     }
 
-    const D = data.filter((item)=>{
-       return item.members[auth.currentUser.uid] === true
+    const D = data && data.filter((item)=>{
+       return auth.currentUser && item.members[auth.currentUser.uid] === true
 
     })
 
@@ -68,14 +67,16 @@ async function handlesave(post){
    
 
 return(
-    <div className="ts">
+    <div className="ts"> 
        <div> <h2 style={{'color':'white'}}>Saved Posts</h2></div> 
       <div className="st"> 
-        { D.map((post) => (
+        { D && D.map((post) => (
         <PostDisplay
+          formd={props.formd}
+          imgdata={props.imgdata}
           v1={post.title}
           v2={post.description}
-          v3={post.pid}
+          v3={post.pid} 
           v4={post.vote}
           v5={post.id}
           UpclickHandler={props.Uv}
@@ -85,6 +86,7 @@ return(
           key={post.pid}
           onhandle = {handlesave}
           v6={post}
+          udata = {props.udata}
         />
       ))}
 

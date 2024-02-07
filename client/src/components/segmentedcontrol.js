@@ -126,7 +126,7 @@ useEffect(() => {
   };
 
   fetchData(); // Call the fetchData function once during component mount
-}, []); // Empty de
+}, []); 
 
 
   useEffect(() => {

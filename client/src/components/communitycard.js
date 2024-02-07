@@ -4,7 +4,7 @@ import classes from './communitycard.module.css';
 import { ScrollArea } from '@mantine/core';
 import { auth } from '../firebase';
 import moment from 'moment';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useMediaQuery } from '@mantine/hooks';
 
 
@@ -19,7 +19,7 @@ const location = useLocation();
 
 
   const handlejoinn = ()=>{
-    props.onhandlejoin();
+    props.onhandlejoin(props.original);
   }
   const reqmembers = props.subThread && Object.entries(props.subThread.members)
   .filter(([key, value]) => value === true)
@@ -34,7 +34,6 @@ const location = useLocation();
     onlineStatus: item.onlineStatus,
   }));
 
-  console.log(onlineMembers)
 
 
 const isWideScreen = useMediaQuery('(min-width: 767px)');
@@ -67,7 +66,14 @@ const isWideScreen = useMediaQuery('(min-width: 767px)');
   return (
     <Card withBorder radius="md" className={classes.card} style={{width:'250px', height:'auto', display:'flex'}}>
       <Card.Section style={{alignSelf:'center'}} className={classes.imageSection}>
+      {props.allsubsrender? <Link key={props.id} style={{ marginBottom: '10px', textDecoration: 'none' }} to={{
+        pathname: '/subredditpage',
+        search: `?title=${encodeURIComponent(props.title)}`,
+      }}>
         <Image src={props.reqimg ? props.reqimg.image :''} alt="Image Loading..."  style={{width:'80px', height:'80px', borderRadius:'50%'}} />
+        </Link> : 
+          <Image src={props.reqimg ? props.reqimg.image :''} alt="Image Loading..."  style={{width:'80px', height:'80px', borderRadius:'50%'}} />
+          }
       </Card.Section>
 
       <Card.Section >
@@ -102,7 +108,7 @@ const isWideScreen = useMediaQuery('(min-width: 767px)');
       <Card.Section className={classes.section}>
         <Group style={{display:'flex', flexDirection:'column', alignItems:'center'}} gap={30}>
 
-       <Button disabled={!isWideScreen} color='red' onClick={handlejoinn} radius="xl" style={{width:'200px'}}>
+       <Button color='red' onClick={handlejoinn} radius="xl" style={{width:'200px'}}>
       {props.subThread.members && props.subThread.members[auth.currentUser.uid] ? 'Joined' : 'Join'}
       </Button>
         </Group>

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import Communitycard from './communitycard'
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { auth } from '../firebase';
 
 
 const AllSubs = (props)=>{
@@ -10,7 +11,36 @@ const AllSubs = (props)=>{
         fetchsubs();
     },[])
 
-
+    async function handlejoin(sub) {
+      console.log(sub)
+      const res = sub;
+      const id = auth.currentUser.uid;
+      const ms = res;
+  
+      if (!ms.members[id]) {
+        ms.members[id] = true;
+      } else {
+        ms.members[id] = false;
+      }
+  
+  
+      try {
+        const response = await axios.put(`/subreddits/${sub.id}`, ms, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+  
+        if (response.status === 200) {
+          console.log('Post updated successfully.');
+        } else {
+          console.error('Error:', response.status, response.statusText);
+        }
+      } catch (error) {
+        console.error('Axios or JSON parsing error:', error);
+      }
+      window.location.reload();
+    }
 
 
 async function fetchsubs(){
@@ -40,12 +70,8 @@ async function fetchsubs(){
     const reqimg = props.imgdata &&  props.imgdata.find((img) => img.user === item.id);
 
     return (
-      <Link key={item.id} style={{ marginBottom: '10px', textDecoration: 'none' }} to={{
-        pathname: '/subredditpage',
-        search: `?title=${encodeURIComponent(item.title)}`,
-      }}>
-        <Communitycard subThread={item} reqimg={reqimg} pdata={props.pdata}  udata={props.udata}/>
-      </Link>
+
+        <Communitycard original={item} onhandlejoin={handlejoin} iid={item.id} title={item.title} allsubsrender={true} subThread={item} reqimg={reqimg} pdata={props.pdata}  udata={props.udata}/>
     );
   })
 ) : (

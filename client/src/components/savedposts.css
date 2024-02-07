@@ -13,3 +13,11 @@
     gap:1em;
 
 }
+
+@media screen and (max-width: 767px) {
+
+    .st{
+       width:90%;
+    }
+ 
+  }

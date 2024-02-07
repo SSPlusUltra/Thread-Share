@@ -378,7 +378,7 @@ const onloggoin = (k)=>{
       <Route path="/subredditpage" element={<SubredditPage formD={data} pdata={postdata} Uv={globalupvote} Dv={globaldownvote}  cl = {cl} imgdata = {imgdata} udata={datau}/>} />
       <Route path="/postcreate" element={<CreatePosts pdata={postdata} oncreate={posthandler} formD={data} imgdata ={imgdata} udata={datau}/>} />
       <Route path="/commentpage" element={<CommentPage  formD={data} pdata={postdata} Uv={globalupvote} Dv={globaldownvote} imgdata={imgdata} udata={datau}/>} />
-      <Route path="/savedposts" element={<SavedPosts formD={postdata}/>} />
+      <Route path="/savedposts" element={<SavedPosts Uv={globalupvote} Dv={globaldownvote} formd={data} imgdata ={imgdata} udata={datau} />} />
       <Route path="/joinedsubs" element={<JoinedSubs imgdata = {imgdata} pdata={postdata} udata={datau}/>} />
       <Route path="/allsubs" element={<AllSubs imgdata = {imgdata} pdata={postdata} udata={datau} formD={data}/>} />
       <Route path="/communitycard" element={<Communitycard formd={data}/>} />
