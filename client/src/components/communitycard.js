@@ -44,7 +44,7 @@ const isWideScreen = useMediaQuery('(min-width: 767px)');
 
   
   const stats = [
-    { title: 'Members', value: props.subThread && Object.values(props.subThread.members).filter((value)=>value === true).length-1 },
+    { title: 'Members', value: props.subThread.members && Object.values(props.subThread.members).filter((value)=>value === true).length-1 },
     { title: 'Posts', value: reqpdata && reqpdata.length || '0' },
     { title: 'Online', value: onlineMembers && onlineMembers.length || '0' },
   ];
