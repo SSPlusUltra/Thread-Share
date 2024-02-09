@@ -78,7 +78,7 @@ const isWideScreen = useMediaQuery('(min-width: 767px)');
 
       <Card.Section >
         <div style={{display:'flex',flexDirection:'column',alignItems:'center'}}>
-          <Text fw={500}>{props.subThread.title}</Text>
+          <Text fw={500}>{props.subThread && props.subThread.title}</Text>
           <ScrollArea style={{ padding:'20px',paddingLeft:'30px', marginBottom:'10px'}}  h={150}>
           <Text fz="md" c="dimmed" style={{wordBreak:'break-word'}}>
           <div dangerouslySetInnerHTML={{ __html: `${props.subThread.description}` }}/>
