@@ -81,12 +81,12 @@ const isWideScreen = useMediaQuery('(min-width: 767px)');
           <Text fw={500}>{props.subThread && props.subThread.title}</Text>
           <ScrollArea style={{ padding:'20px',paddingLeft:'30px', marginBottom:'10px'}}  h={150}>
           <Text fz="md" c="dimmed" style={{wordBreak:'break-word'}}>
-          <div dangerouslySetInnerHTML={{ __html: `${props.subThread.description}` }}/>
+          <div dangerouslySetInnerHTML={{ __html: `${props.subThread && props.subThread.description}` }}/>
           </Text>
           </ScrollArea>
           <Badge color='blue'  leftSection={
             <IconCake/>
-          } style={{margin:'0px 8px 0px 8px', height:'30px'}} variant="outline">{moment(props.subThread.date).format('DD MMMM YYYY')}</Badge>
+          } style={{margin:'0px 8px 0px 8px', height:'30px'}} variant="outline">{moment(props.subThread && props.subThread.date).format('DD MMMM YYYY')}</Badge>
         </div>
         </Card.Section>
       <br></br>
