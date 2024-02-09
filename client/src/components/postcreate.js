@@ -182,7 +182,7 @@ const handled = (val)=>{
     }
     props.oncreate(data)
     const subredditTitle = encodeURIComponent(data.subreddit);
-    const url = `/home`;
+    const url = `/homepage`;
 setTitle('')
 setDesc('')
 navigate(url);
