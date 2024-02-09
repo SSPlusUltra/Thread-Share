@@ -151,7 +151,7 @@ const isWideScreen = useMediaQuery('(min-width: 767px)');
 }
 
 const handled = (val)=>{
-  setsubThread(val);
+  val && setsubThread(val);
 }
 
  const handleSubmit = (event)=>{
