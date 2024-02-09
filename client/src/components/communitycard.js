@@ -109,7 +109,7 @@ const isWideScreen = useMediaQuery('(min-width: 767px)');
         <Group style={{display:'flex', flexDirection:'column', alignItems:'center'}} gap={30}>
 
        <Button color='red' onClick={handlejoinn} radius="xl" style={{width:'200px'}}>
-      {props.subThread.members && props.subThread.members[auth.currentUser.uid] ? 'Joined' : 'Join'}
+      {props.subThread && props.subThread.members && props.subThread.members[auth.currentUser.uid] ? 'Joined' : 'Join'}
       </Button>
         </Group>
       </Card.Section>
