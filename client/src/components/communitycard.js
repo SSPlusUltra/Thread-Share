@@ -21,9 +21,11 @@ const location = useLocation();
   const handlejoinn = ()=>{
     props.onhandlejoin(props.original);
   }
-  const reqmembers = props.subThread && Object.entries(props.subThread.members)
-  .filter(([key, value]) => value === true)
-  .map(([key, value]) => key);
+  const reqmembers = props.subThread && props.subThread.members
+  ? Object.entries(props.subThread.members)
+      .filter(([key, value]) => value === true)
+      .map(([key, value]) => key)
+  : [];
 
 
 
